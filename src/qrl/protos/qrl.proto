@@ -331,7 +331,6 @@ message AddressAmount {
 }
 
 message BlockHeader {
-    // Header
     bytes hash_header = 1;          // Block's header hash
 
     uint64 block_number = 2;        // Block number

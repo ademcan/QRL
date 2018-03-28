@@ -294,9 +294,7 @@ BlockDataPoint message definition
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| hash_header | [bytes](#bytes) |  | Header
-
-Block&#39;s header hash |
+| hash_header | [bytes](#bytes) |  | Block&#39;s header hash |
 | block_number | [uint64](#uint64) |  | Block number |
 | timestamp_seconds | [uint64](#uint64) |  | Block timestamp in seconds |
 | hash_header_prev | [bytes](#bytes) |  | Previous block&#39;s header hash |
