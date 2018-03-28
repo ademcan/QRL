@@ -1,0 +1,4672 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Protocol Documentation</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic"/>
+    <style>
+      body {
+        width: 60em;
+        margin: 1em auto;
+        color: #222;
+        font-family: "Ubuntu", sans-serif;
+        padding-bottom: 4em;
+      }
+
+      h1 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      h2 {
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+        margin: 1.5em 0;
+      }
+
+      h3 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      a {
+        text-decoration: none;
+        color: #567e25;
+      }
+
+      table {
+        width: 100%;
+        font-size: 80%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        font-weight: 700;
+        background-color: #dcdcdc;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fbfbfb;
+      }
+
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5ex 2ex;
+      }
+
+      td p {
+        text-indent: 1em;
+        margin: 0;
+      }
+
+      td p:nth-child(1) {
+        text-indent: 0;  
+      }
+
+       
+      .field-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .field-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .field-table td:nth-child(3) {  
+        width: 6em;
+      }
+      .field-table td:nth-child(4) {  
+        width: auto;
+      }
+
+       
+      .extension-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(3) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(4) {  
+        width: 5em;
+      }
+      .extension-table td:nth-child(5) {  
+        width: auto;
+      }
+
+       
+      .enum-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .enum-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .enum-table td:nth-child(3) {  
+        width: auto;
+      }
+
+       
+      .scalar-value-types-table tr {
+        height: 3em;
+      }
+
+       
+      #toc-container ul {
+        list-style-type: none;
+        padding-left: 1em;
+        line-height: 180%;
+        margin: 0;
+      }
+      #toc > li > a {
+        font-weight: bold;
+      }
+
+       
+      .file-heading {
+        width: 100%;
+        display: table;
+        border-bottom: 1px solid #aaa;
+        margin: 4em 0 1.5em 0;
+      }
+      .file-heading h2 {
+        border: none;
+        display: table-cell;
+      }
+      .file-heading a {
+        text-align: right;
+        display: table-cell;
+      }
+
+       
+      .badge {
+        width: 1.6em;
+        height: 1.6em;
+        display: inline-block;
+
+        line-height: 1.6em;
+        text-align: center;
+        font-weight: bold;
+        font-size: 60%;
+
+        color: #89ba48;
+        background-color: #dff0c8;
+
+        margin: 0.5ex 1em 0.5ex -1em;
+        border: 1px solid #fbfbfb;
+        border-radius: 1ex;
+      }
+    </style>
+
+    
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+  </head>
+
+  <body>
+
+    <h1 id="title">Protocol Documentation</h1>
+
+    <h2>Table of Contents</h2>
+
+    <div id="toc-container">
+      <ul id="toc">
+        
+          
+          <li>
+            <a href="#qrl.proto">qrl.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#qrl.AddressAmount"><span class="badge">M</span>AddressAmount</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.AddressList"><span class="badge">M</span>AddressList</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.AddressState"><span class="badge">M</span>AddressState</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.AddressState.SlavePksAccessTypeEntry"><span class="badge">M</span>AddressState.SlavePksAccessTypeEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.AddressState.TokensEntry"><span class="badge">M</span>AddressState.TokensEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Block"><span class="badge">M</span>Block</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockDataPoint"><span class="badge">M</span>BlockDataPoint</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockExtended"><span class="badge">M</span>BlockExtended</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockHeader"><span class="badge">M</span>BlockHeader</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockHeaderExtended"><span class="badge">M</span>BlockHeaderExtended</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockHeightData"><span class="badge">M</span>BlockHeightData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockMetaData"><span class="badge">M</span>BlockMetaData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockMetaDataList"><span class="badge">M</span>BlockMetaDataList</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.BlockNumberMapping"><span class="badge">M</span>BlockNumberMapping</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.CollectEphemeralMessageReq"><span class="badge">M</span>CollectEphemeralMessageReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.CollectEphemeralMessageResp"><span class="badge">M</span>CollectEphemeralMessageResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Empty"><span class="badge">M</span>Empty</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.EncryptedEphemeralMessage"><span class="badge">M</span>EncryptedEphemeralMessage</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.EncryptedEphemeralMessage.Channel"><span class="badge">M</span>EncryptedEphemeralMessage.Channel</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.EphemeralChannelPayload"><span class="badge">M</span>EphemeralChannelPayload</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.EphemeralMessagePayload"><span class="badge">M</span>EphemeralMessagePayload</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.EphemeralMetadata"><span class="badge">M</span>EphemeralMetadata</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GenesisBalance"><span class="badge">M</span>GenesisBalance</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetAddressFromPKReq"><span class="badge">M</span>GetAddressFromPKReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetAddressFromPKResp"><span class="badge">M</span>GetAddressFromPKResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetAddressStateReq"><span class="badge">M</span>GetAddressStateReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetAddressStateResp"><span class="badge">M</span>GetAddressStateResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetBlockReq"><span class="badge">M</span>GetBlockReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetBlockResp"><span class="badge">M</span>GetBlockResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetKnownPeersReq"><span class="badge">M</span>GetKnownPeersReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetKnownPeersResp"><span class="badge">M</span>GetKnownPeersResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLatestDataReq"><span class="badge">M</span>GetLatestDataReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLatestDataResp"><span class="badge">M</span>GetLatestDataResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLocalAddressesReq"><span class="badge">M</span>GetLocalAddressesReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLocalAddressesResp"><span class="badge">M</span>GetLocalAddressesResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetNodeStateReq"><span class="badge">M</span>GetNodeStateReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetNodeStateResp"><span class="badge">M</span>GetNodeStateResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetObjectReq"><span class="badge">M</span>GetObjectReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetObjectResp"><span class="badge">M</span>GetObjectResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetStatsReq"><span class="badge">M</span>GetStatsReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetStatsResp"><span class="badge">M</span>GetStatsResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.LRUStateCache"><span class="badge">M</span>LRUStateCache</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.LatticePK"><span class="badge">M</span>LatticePK</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.LatticePublicKeyTxnReq"><span class="badge">M</span>LatticePublicKeyTxnReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.LatticePublicKeys"><span class="badge">M</span>LatticePublicKeys</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.NodeChainState"><span class="badge">M</span>NodeChainState</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.NodeHeaderHash"><span class="badge">M</span>NodeHeaderHash</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.NodeInfo"><span class="badge">M</span>NodeInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.P2PAcknowledgement"><span class="badge">M</span>P2PAcknowledgement</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Peer"><span class="badge">M</span>Peer</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PeerInfo"><span class="badge">M</span>PeerInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Peers"><span class="badge">M</span>Peers</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PushEphemeralMessageReq"><span class="badge">M</span>PushEphemeralMessageReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PushTransactionReq"><span class="badge">M</span>PushTransactionReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PushTransactionResp"><span class="badge">M</span>PushTransactionResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.SlaveTxnReq"><span class="badge">M</span>SlaveTxnReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.StateLoader"><span class="badge">M</span>StateLoader</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.StateObjects"><span class="badge">M</span>StateObjects</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.StoredPeers"><span class="badge">M</span>StoredPeers</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TokenDetailedList"><span class="badge">M</span>TokenDetailedList</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TokenList"><span class="badge">M</span>TokenList</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TokenMetadata"><span class="badge">M</span>TokenMetadata</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TokenTxnReq"><span class="badge">M</span>TokenTxnReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction"><span class="badge">M</span>Transaction</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.CoinBase"><span class="badge">M</span>Transaction.CoinBase</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.LatticePublicKey"><span class="badge">M</span>Transaction.LatticePublicKey</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.Message"><span class="badge">M</span>Transaction.Message</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.Slave"><span class="badge">M</span>Transaction.Slave</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.Token"><span class="badge">M</span>Transaction.Token</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.Transfer"><span class="badge">M</span>Transaction.Transfer</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.Transaction.TransferToken"><span class="badge">M</span>Transaction.TransferToken</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransactionCount"><span class="badge">M</span>TransactionCount</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransactionCount.CountEntry"><span class="badge">M</span>TransactionCount.CountEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransactionExtended"><span class="badge">M</span>TransactionExtended</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransferCoinsReq"><span class="badge">M</span>TransferCoinsReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransferCoinsResp"><span class="badge">M</span>TransferCoinsResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.TransferTokenTxnReq"><span class="badge">M</span>TransferTokenTxnReq</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#qrl.GetLatestDataReq.Filter"><span class="badge">E</span>GetLatestDataReq.Filter</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.NodeInfo.State"><span class="badge">E</span>NodeInfo.State</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PushTransactionResp.ResponseCode"><span class="badge">E</span>PushTransactionResp.ResponseCode</a>
+                </li>
+              
+              
+              
+                <li>
+                  <a href="#qrl.AdminAPI"><span class="badge">S</span>AdminAPI</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PublicAPI"><span class="badge">S</span>PublicAPI</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#qrlbase.proto">qrlbase.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#qrl.GetNodeInfoReq"><span class="badge">M</span>GetNodeInfoReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetNodeInfoResp"><span class="badge">M</span>GetNodeInfoResp</a>
+                </li>
+              
+              
+              
+              
+                <li>
+                  <a href="#qrl.Base"><span class="badge">S</span>Base</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#qrllegacy.proto">qrllegacy.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#qrl.BKData"><span class="badge">M</span>BKData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.FBData"><span class="badge">M</span>FBData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.LegacyMessage"><span class="badge">M</span>LegacyMessage</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.MRData"><span class="badge">M</span>MRData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.NoData"><span class="badge">M</span>NoData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PBData"><span class="badge">M</span>PBData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PLData"><span class="badge">M</span>PLData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.PONGData"><span class="badge">M</span>PONGData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.SYNCData"><span class="badge">M</span>SYNCData</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.VEData"><span class="badge">M</span>VEData</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#qrl.LegacyMessage.FuncName"><span class="badge">E</span>LegacyMessage.FuncName</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#qrlmining.proto">qrlmining.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#qrl.GetBlockMiningCompatibleReq"><span class="badge">M</span>GetBlockMiningCompatibleReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetBlockMiningCompatibleResp"><span class="badge">M</span>GetBlockMiningCompatibleResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetBlockToMineReq"><span class="badge">M</span>GetBlockToMineReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetBlockToMineResp"><span class="badge">M</span>GetBlockToMineResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLastBlockHeaderReq"><span class="badge">M</span>GetLastBlockHeaderReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.GetLastBlockHeaderResp"><span class="badge">M</span>GetLastBlockHeaderResp</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.SubmitMinedBlockReq"><span class="badge">M</span>SubmitMinedBlockReq</a>
+                </li>
+              
+                <li>
+                  <a href="#qrl.SubmitMinedBlockResp"><span class="badge">M</span>SubmitMinedBlockResp</a>
+                </li>
+              
+              
+              
+              
+                <li>
+                  <a href="#qrl.MiningAPI"><span class="badge">S</span>MiningAPI</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+        <li><a href="#scalar-value-types">Scalar Value Types</a></li>
+      </ul>
+    </div>
+
+    
+      
+      <div class="file-heading">
+        <h2 id="qrl.proto">qrl.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="qrl.AddressAmount">AddressAmount</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.AddressList">AddressList</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addresses</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.AddressState">AddressState</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>balance</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>nonce</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>FIXME: Discuss. 32 or 64 bits? </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ots_bitfield</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction_hashes</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tokens</td>
+                  <td><a href="#qrl.AddressState.TokensEntry">AddressState.TokensEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>latticePK_list</td>
+                  <td><a href="#qrl.LatticePK">LatticePK</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>slave_pks_access_type</td>
+                  <td><a href="#qrl.AddressState.SlavePksAccessTypeEntry">AddressState.SlavePksAccessTypeEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ots_counter</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.AddressState.SlavePksAccessTypeEntry">AddressState.SlavePksAccessTypeEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.AddressState.TokensEntry">AddressState.TokensEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Block">Block</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transactions</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>genesis_balance</td>
+                  <td><a href="#qrl.GenesisBalance">GenesisBalance</a></td>
+                  <td>repeated</td>
+                  <td><p>This is only applicable to genesis blocks </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockDataPoint">BlockDataPoint</h3>
+        <p>BlockDataPoint message definition</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Block number </p></td>
+                </tr>
+              
+                <tr>
+                  <td>difficulty</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Block difficulty </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Block timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>time_last</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>time_movavg</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>hash_power</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>Hash power </p></td>
+                </tr>
+              
+                <tr>
+                  <td>header_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Block header hash </p></td>
+                </tr>
+              
+                <tr>
+                  <td>header_hash_prev</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Previous block&#39;s header hash </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockExtended">BlockExtended</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>extended_transactions</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>genesis_balance</td>
+                  <td><a href="#qrl.GenesisBalance">GenesisBalance</a></td>
+                  <td>repeated</td>
+                  <td><p>This is only applicable to genesis blocks </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockHeader">BlockHeader</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>hash_header</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Header </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp_seconds</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>hash_header_prev</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reward_block</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reward_fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>merkle_root</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mining_nonce</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>extra_nonce</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockHeaderExtended">BlockHeaderExtended</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction_count</td>
+                  <td><a href="#qrl.TransactionCount">TransactionCount</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockHeightData">BlockHeightData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_headerhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cumulative_difficulty</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockMetaData">BlockMetaData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>is_orphan</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_difficulty</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cumulative_difficulty</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>child_headerhashes</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>last_N_headerhashes</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p>Keeps last N headerhashes, for measurement of timestamp difference </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockMetaDataList">BlockMetaDataList</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_number_hashes</td>
+                  <td><a href="#qrl.BlockMetaData">BlockMetaData</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.BlockNumberMapping">BlockNumberMapping</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>headerhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>prev_headerhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.CollectEphemeralMessageReq">CollectEphemeralMessageReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>msg_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.CollectEphemeralMessageResp">CollectEphemeralMessageResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>ephemeral_metadata</td>
+                  <td><a href="#qrl.EphemeralMetadata">EphemeralMetadata</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Empty">Empty</h3>
+        <p>Empty message definition</p>
+
+        
+
+        
+      
+        <h3 id="qrl.EncryptedEphemeralMessage">EncryptedEphemeralMessage</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>msg_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>b&#39;NEW&#39; or PRF </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ttl</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Expiry Timestamp in seconds </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ttr</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Time to relay </p></td>
+                </tr>
+              
+                <tr>
+                  <td>channel</td>
+                  <td><a href="#qrl.EncryptedEphemeralMessage.Channel">EncryptedEphemeralMessage.Channel</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>nonce</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>nonce </p></td>
+                </tr>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>JSON content, encrypted by aes256_symkey </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.EncryptedEphemeralMessage.Channel">EncryptedEphemeralMessage.Channel</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>enc_aes256_symkey</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>aes256_symkey encrypted by kyber </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.EphemeralChannelPayload">EphemeralChannelPayload</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>prf512_seed</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>PRF512 seed used for further communication after channel established </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dilithium_signature</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Sign hash of (msg_id, ttl, enc_aes256_symkey, prf512_seed, addr_from, </p></td>
+                </tr>
+              
+                <tr>
+                  <td>addr_from</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>data)
+
+Sender address </p></td>
+                </tr>
+              
+                <tr>
+                  <td>data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Could be anything, plain-text, binary, JSON etc. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.EphemeralMessagePayload">EphemeralMessagePayload</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addr_from</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Sender address </p></td>
+                </tr>
+              
+                <tr>
+                  <td>data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Could be anything, plain-text, binary, JSON etc. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.EphemeralMetadata">EphemeralMetadata</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>encrypted_ephemeral_message_list</td>
+                  <td><a href="#qrl.EncryptedEphemeralMessage">EncryptedEphemeralMessage</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GenesisBalance">GenesisBalance</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Address is string only here to increase visibility </p></td>
+                </tr>
+              
+                <tr>
+                  <td>balance</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetAddressFromPKReq">GetAddressFromPKReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetAddressFromPKResp">GetAddressFromPKResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetAddressStateReq">GetAddressStateReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetAddressStateResp">GetAddressStateResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>state</td>
+                  <td><a href="#qrl.AddressState">AddressState</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetBlockReq">GetBlockReq</h3>
+        <p>NOT USED -> RM?</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>index</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Indicates the index number in mainchain </p></td>
+                </tr>
+              
+                <tr>
+                  <td>after_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>request the node that comes after hash </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetBlockResp">GetBlockResp</h3>
+        <p>NOT USED -> RM?</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>node_info</td>
+                  <td><a href="#qrl.NodeInfo">NodeInfo</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block</td>
+                  <td><a href="#qrl.Block">Block</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetKnownPeersReq">GetKnownPeersReq</h3>
+        <p>Represents a query to get known peers</p>
+
+        
+
+        
+      
+        <h3 id="qrl.GetKnownPeersResp">GetKnownPeersResp</h3>
+        <p>Represents the reply message to known peers query</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>node_info</td>
+                  <td><a href="#qrl.NodeInfo">NodeInfo</a></td>
+                  <td></td>
+                  <td><p>NodeInfo object containing node state information </p></td>
+                </tr>
+              
+                <tr>
+                  <td>known_peers</td>
+                  <td><a href="#qrl.Peer">Peer</a></td>
+                  <td>repeated</td>
+                  <td><p>List of Peer objects containing peer nodes detailed information </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetLatestDataReq">GetLatestDataReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>filter</td>
+                  <td><a href="#qrl.GetLatestDataReq.Filter">GetLatestDataReq.Filter</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>offset</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Offset in the result list (works backwards in this case) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>quantity</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>Number of items to retrive. Capped at 100 </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetLatestDataResp">GetLatestDataResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>blockheaders</td>
+                  <td><a href="#qrl.BlockHeaderExtended">BlockHeaderExtended</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transactions</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transactions_unconfirmed</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetLocalAddressesReq">GetLocalAddressesReq</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="qrl.GetLocalAddressesResp">GetLocalAddressesResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addresses</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetNodeStateReq">GetNodeStateReq</h3>
+        <p>Represents a query to get node state</p>
+
+        
+
+        
+      
+        <h3 id="qrl.GetNodeStateResp">GetNodeStateResp</h3>
+        <p>Represents the reply message to node state query</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>info</td>
+                  <td><a href="#qrl.NodeInfo">NodeInfo</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetObjectReq">GetObjectReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>query</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetObjectResp">GetObjectResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>found</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>address_state</td>
+                  <td><a href="#qrl.AddressState">AddressState</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_extended</td>
+                  <td><a href="#qrl.BlockExtended">BlockExtended</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetStatsReq">GetStatsReq</h3>
+        <p>Represents a query to get statistics about node</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>include_timeseries</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Boolean to define if block timeseries should be included in reply or not </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetStatsResp">GetStatsResp</h3>
+        <p>Represents the reply message to get statistics about node</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>node_info</td>
+                  <td><a href="#qrl.NodeInfo">NodeInfo</a></td>
+                  <td></td>
+                  <td><p>NodeInfo object containing node state information </p></td>
+                </tr>
+              
+                <tr>
+                  <td>epoch</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Current epoch </p></td>
+                </tr>
+              
+                <tr>
+                  <td>uptime_network</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Indicates uptime in seconds </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_last_reward</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Block reward </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_time_mean</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Blocktime average </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_time_sd</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Blocktime standrad deviation </p></td>
+                </tr>
+              
+                <tr>
+                  <td>coins_total_supply</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Total coins supply </p></td>
+                </tr>
+              
+                <tr>
+                  <td>coins_emitted</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Total coins emitted </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_timeseries</td>
+                  <td><a href="#qrl.BlockDataPoint">BlockDataPoint</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.LRUStateCache">LRUStateCache</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="qrl.LatticePK">LatticePK</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dilithium_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>kyber_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.LatticePublicKeyTxnReq">LatticePublicKeyTxnReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>kyber_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dilithium_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>xmss_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.LatticePublicKeys">LatticePublicKeys</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>lattice_keys</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.NodeChainState">NodeChainState</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>header_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cumulative_difficulty</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.NodeHeaderHash">NodeHeaderHash</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block_number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>headerhashes</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.NodeInfo">NodeInfo</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>version</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state</td>
+                  <td><a href="#qrl.NodeInfo.State">NodeInfo.State</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>num_connections</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>num_known_peers</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>uptime</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Uptime in seconds </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_height</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_last_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>network_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.P2PAcknowledgement">P2PAcknowledgement</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>bytes_processed</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Peer">Peer</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>ip</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PeerInfo">PeerInfo</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peer_ip</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>banned_timestamp</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>credibility</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>last_connections_timestamp</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Peers">Peers</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peer_info_list</td>
+                  <td><a href="#qrl.PeerInfo">PeerInfo</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PushEphemeralMessageReq">PushEphemeralMessageReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>ephemeral_message</td>
+                  <td><a href="#qrl.EncryptedEphemeralMessage">EncryptedEphemeralMessage</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PushTransactionReq">PushTransactionReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>transaction_signed</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PushTransactionResp">PushTransactionResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>error_code</td>
+                  <td><a href="#qrl.PushTransactionResp.ResponseCode">PushTransactionResp.ResponseCode</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error_description</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tx_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.SlaveTxnReq">SlaveTxnReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>slave_pks</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>access_types</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>xmss_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.StateLoader">StateLoader</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addresses</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>total_coin_supply</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.StateObjects">StateObjects</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>state_loaders</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.StoredPeers">StoredPeers</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peers</td>
+                  <td><a href="#qrl.Peer">Peer</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TokenDetailedList">TokenDetailedList</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>extended_tokens</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TokenList">TokenList</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TokenMetadata">TokenMetadata</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transfer_token_tx_hashes</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TokenTxnReq">TokenTxnReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>symbol</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>owner</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>decimals</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>initial_balances</td>
+                  <td><a href="#qrl.AddressAmount">AddressAmount</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>xmss_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction">Transaction</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>public_key</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signature</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>nonce</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transaction_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transfer</td>
+                  <td><a href="#qrl.Transaction.Transfer">Transaction.Transfer</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>coinbase</td>
+                  <td><a href="#qrl.Transaction.CoinBase">Transaction.CoinBase</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>latticePK</td>
+                  <td><a href="#qrl.Transaction.LatticePublicKey">Transaction.LatticePublicKey</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#qrl.Transaction.Message">Transaction.Message</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token</td>
+                  <td><a href="#qrl.Transaction.Token">Transaction.Token</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>transfer_token</td>
+                  <td><a href="#qrl.Transaction.TransferToken">Transaction.TransferToken</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>slave</td>
+                  <td><a href="#qrl.Transaction.Slave">Transaction.Slave</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.CoinBase">Transaction.CoinBase</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addr_to</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amount</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.LatticePublicKey">Transaction.LatticePublicKey</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>kyber_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dilithium_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.Message">Transaction.Message</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>message_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.Slave">Transaction.Slave</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>slave_pks</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>access_types</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.Token">Transaction.Token</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>symbol</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>owner</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>decimals</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>initial_balances</td>
+                  <td><a href="#qrl.AddressAmount">AddressAmount</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.Transfer">Transaction.Transfer</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>addrs_to</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amounts</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.Transaction.TransferToken">Transaction.TransferToken</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>token_txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>addrs_to</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amounts</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransactionCount">TransactionCount</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>count</td>
+                  <td><a href="#qrl.TransactionCount.CountEntry">TransactionCount.CountEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransactionCount.CountEntry">TransactionCount.CountEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransactionExtended">TransactionExtended</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>header</td>
+                  <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tx</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>addr_from</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransferCoinsReq">TransferCoinsReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Transaction source address </p></td>
+                </tr>
+              
+                <tr>
+                  <td>addresses_to</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p>Transaction destination address </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amounts</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td>repeated</td>
+                  <td><p>Amount. It should be expressed in Shor </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Fee. It should be expressed in Shor </p></td>
+                </tr>
+              
+                <tr>
+                  <td>xmss_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>XMSS Public key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransferCoinsResp">TransferCoinsResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>extended_transaction_unsigned</td>
+                  <td><a href="#qrl.TransactionExtended">TransactionExtended</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.TransferTokenTxnReq">TransferTokenTxnReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>master_addr</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>addresses_to</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token_txhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>amounts</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fee</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>xmss_pk</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+
+      
+        <h3 id="qrl.GetLatestDataReq.Filter">GetLatestDataReq.Filter</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>ALL</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>BLOCKHEADERS</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>TRANSACTIONS</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>TRANSACTIONS_UNCONFIRMED</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="qrl.NodeInfo.State">NodeInfo.State</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>UNKNOWN</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>UNSYNCED</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SYNCING</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SYNCED</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>FORKED</td>
+                <td>4</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="qrl.PushTransactionResp.ResponseCode">PushTransactionResp.ResponseCode</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>UNKNOWN</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ERROR</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>VALIDATION_FAILED</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SUBMITTED</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+        <h3 id="qrl.AdminAPI">AdminAPI</h3>
+        <p>This is a place holder for testing/instrumentation APIs</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="qrl.PublicAPI">PublicAPI</h3>
+        <p>This service describes the Public API used by clients (wallet/cli/etc)</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>GetNodeState</td>
+                <td><a href="#qrl.GetNodeStateReq">GetNodeStateReq</a></td>
+                <td><a href="#qrl.GetNodeStateResp">GetNodeStateResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetKnownPeers</td>
+                <td><a href="#qrl.GetKnownPeersReq">GetKnownPeersReq</a></td>
+                <td><a href="#qrl.GetKnownPeersResp">GetKnownPeersResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetStats</td>
+                <td><a href="#qrl.GetStatsReq">GetStatsReq</a></td>
+                <td><a href="#qrl.GetStatsResp">GetStatsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetAddressState</td>
+                <td><a href="#qrl.GetAddressStateReq">GetAddressStateReq</a></td>
+                <td><a href="#qrl.GetAddressStateResp">GetAddressStateResp</a></td>
+                <td><p>Returns address state
+https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetObject</td>
+                <td><a href="#qrl.GetObjectReq">GetObjectReq</a></td>
+                <td><a href="#qrl.GetObjectResp">GetObjectResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLatestData</td>
+                <td><a href="#qrl.GetLatestDataReq">GetLatestDataReq</a></td>
+                <td><a href="#qrl.GetLatestDataResp">GetLatestDataResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>TransferCoins</td>
+                <td><a href="#qrl.TransferCoinsReq">TransferCoinsReq</a></td>
+                <td><a href="#qrl.TransferCoinsResp">TransferCoinsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PushTransaction</td>
+                <td><a href="#qrl.PushTransactionReq">PushTransactionReq</a></td>
+                <td><a href="#qrl.PushTransactionResp">PushTransactionResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetTokenTxn</td>
+                <td><a href="#qrl.TokenTxnReq">TokenTxnReq</a></td>
+                <td><a href="#qrl.TransferCoinsResp">TransferCoinsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetTransferTokenTxn</td>
+                <td><a href="#qrl.TransferTokenTxnReq">TransferTokenTxnReq</a></td>
+                <td><a href="#qrl.TransferCoinsResp">TransferCoinsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetSlaveTxn</td>
+                <td><a href="#qrl.SlaveTxnReq">SlaveTxnReq</a></td>
+                <td><a href="#qrl.TransferCoinsResp">TransferCoinsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLatticePublicKeyTxn</td>
+                <td><a href="#qrl.LatticePublicKeyTxnReq">LatticePublicKeyTxnReq</a></td>
+                <td><a href="#qrl.TransferCoinsResp">TransferCoinsResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetAddressFromPK</td>
+                <td><a href="#qrl.GetAddressFromPKReq">GetAddressFromPKReq</a></td>
+                <td><a href="#qrl.GetAddressFromPKResp">GetAddressFromPKResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>PushEphemeralMessage</td>
+                <td><a href="#qrl.PushEphemeralMessageReq">PushEphemeralMessageReq</a></td>
+                <td><a href="#qrl.PushTransactionResp">PushTransactionResp</a></td>
+                <td><p>------- Ephemeral API -------</p></td>
+              </tr>
+            
+              <tr>
+                <td>CollectEphemeralMessage</td>
+                <td><a href="#qrl.CollectEphemeralMessageReq">CollectEphemeralMessageReq</a></td>
+                <td><a href="#qrl.CollectEphemeralMessageResp">CollectEphemeralMessageResp</a></td>
+                <td><p>------------------------------</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetTokenDetailedList</td>
+                <td><a href="#qrl.Empty">Empty</a></td>
+                <td><a href="#qrl.TokenDetailedList">TokenDetailedList</a></td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="qrlbase.proto">qrlbase.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="qrl.GetNodeInfoReq">GetNodeInfoReq</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="qrl.GetNodeInfoResp">GetNodeInfoResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>version</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>grpcProto</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+
+      
+
+      
+
+      
+        <h3 id="qrl.Base">Base</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>GetNodeInfo</td>
+                <td><a href="#qrl.GetNodeInfoReq">GetNodeInfoReq</a></td>
+                <td><a href="#qrl.GetNodeInfoResp">GetNodeInfoResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="qrllegacy.proto">qrllegacy.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="qrl.BKData">BKData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>mrData</td>
+                  <td><a href="#qrl.MRData">MRData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block</td>
+                  <td><a href="#qrl.Block">Block</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.FBData">FBData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>index</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.LegacyMessage">LegacyMessage</h3>
+        <p>Adding old code to refactor while keeping things working</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>func_name</td>
+                  <td><a href="#qrl.LegacyMessage.FuncName">LegacyMessage.FuncName</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>noData</td>
+                  <td><a href="#qrl.NoData">NoData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>veData</td>
+                  <td><a href="#qrl.VEData">VEData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>plData</td>
+                  <td><a href="#qrl.PLData">PLData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pongData</td>
+                  <td><a href="#qrl.PONGData">PONGData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mrData</td>
+                  <td><a href="#qrl.MRData">MRData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block</td>
+                  <td><a href="#qrl.Block">Block</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fbData</td>
+                  <td><a href="#qrl.FBData">FBData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pbData</td>
+                  <td><a href="#qrl.PBData">PBData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>bhData</td>
+                  <td><a href="#qrl.BlockHeightData">BlockHeightData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dstData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dtData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>txData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>vtData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mtData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tkData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ttData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ltData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>slData</td>
+                  <td><a href="#qrl.Transaction">Transaction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ephData</td>
+                  <td><a href="#qrl.EncryptedEphemeralMessage">EncryptedEphemeralMessage</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>syncData</td>
+                  <td><a href="#qrl.SYNCData">SYNCData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>chainStateData</td>
+                  <td><a href="#qrl.NodeChainState">NodeChainState</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>nodeHeaderHash</td>
+                  <td><a href="#qrl.NodeHeaderHash">NodeHeaderHash</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>p2pAckData</td>
+                  <td><a href="#qrl.P2PAcknowledgement">P2PAcknowledgement</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.MRData">MRData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>FIXME: rename this to block_headerhash </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#qrl.LegacyMessage.FuncName">LegacyMessage.FuncName</a></td>
+                  <td></td>
+                  <td><p>FIXME: type/string what is this </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stake_selector</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>block_number</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>prev_headerhash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reveal_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.NoData">NoData</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="qrl.PBData">PBData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>block</td>
+                  <td><a href="#qrl.Block">Block</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PLData">PLData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peer_ips</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.PONGData">PONGData</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="qrl.SYNCData">SYNCData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>state</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.VEData">VEData</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>version</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>genesis_prev_hash</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>rate_limit</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+
+      
+        <h3 id="qrl.LegacyMessage.FuncName">LegacyMessage.FuncName</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>VE</td>
+                <td>0</td>
+                <td><p>Version</p></td>
+              </tr>
+            
+              <tr>
+                <td>PL</td>
+                <td>1</td>
+                <td><p>Peers List</p></td>
+              </tr>
+            
+              <tr>
+                <td>PONG</td>
+                <td>2</td>
+                <td><p>Pong TODO: Obsolete</p></td>
+              </tr>
+            
+              <tr>
+                <td>MR</td>
+                <td>3</td>
+                <td><p>Message received</p></td>
+              </tr>
+            
+              <tr>
+                <td>SFM</td>
+                <td>4</td>
+                <td><p>Send Full Message</p></td>
+              </tr>
+            
+              <tr>
+                <td>BK</td>
+                <td>5</td>
+                <td><p>Block</p></td>
+              </tr>
+            
+              <tr>
+                <td>FB</td>
+                <td>6</td>
+                <td><p>Fetch request for block</p></td>
+              </tr>
+            
+              <tr>
+                <td>PB</td>
+                <td>7</td>
+                <td><p>Push Block</p></td>
+              </tr>
+            
+              <tr>
+                <td>BH</td>
+                <td>8</td>
+                <td><p>Block Height</p></td>
+              </tr>
+            
+              <tr>
+                <td>ST</td>
+                <td>9</td>
+                <td><p>Stake Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>DST</td>
+                <td>10</td>
+                <td><p>Destake Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>DT</td>
+                <td>11</td>
+                <td><p>Duplicate Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>TX</td>
+                <td>12</td>
+                <td><p>Transfer Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>VT</td>
+                <td>13</td>
+                <td><p>Vote</p></td>
+              </tr>
+            
+              <tr>
+                <td>LT</td>
+                <td>14</td>
+                <td><p>Lattice Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>EPH</td>
+                <td>15</td>
+                <td><p>Ephemeral</p></td>
+              </tr>
+            
+              <tr>
+                <td>MT</td>
+                <td>16</td>
+                <td><p>Message Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>TK</td>
+                <td>17</td>
+                <td><p>Token Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>TT</td>
+                <td>18</td>
+                <td><p>Transfer Token Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>SL</td>
+                <td>19</td>
+                <td><p>Slave Transaction</p></td>
+              </tr>
+            
+              <tr>
+                <td>SYNC</td>
+                <td>20</td>
+                <td><p>Add into synced list, if the node replies</p></td>
+              </tr>
+            
+              <tr>
+                <td>CHAINSTATE</td>
+                <td>21</td>
+                <td><p>Chain State</p></td>
+              </tr>
+            
+              <tr>
+                <td>HEADERHASHES</td>
+                <td>22</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>P2P_ACK</td>
+                <td>23</td>
+                <td><p>P2P Acknowledgement</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="qrlmining.proto">qrlmining.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="qrl.GetBlockMiningCompatibleReq">GetBlockMiningCompatibleReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>Used for getlastblockheader and getblockheaderbyheight
+
+if height = 0, this means getlastblockheader </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetBlockMiningCompatibleResp">GetBlockMiningCompatibleResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>blockheader</td>
+                  <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>blockmetadata</td>
+                  <td><a href="#qrl.BlockMetaData">BlockMetaData</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetBlockToMineReq">GetBlockToMineReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>wallet_address</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetBlockToMineResp">GetBlockToMineResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>blocktemplate_blob</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>max length 112 bytes, otherwise xmr-stak will hiccup </p></td>
+                </tr>
+              
+                <tr>
+                  <td>difficulty</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p>difficulty that the new block should meet </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reserved_offset</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetLastBlockHeaderReq">GetLastBlockHeaderReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.GetLastBlockHeaderResp">GetLastBlockHeaderResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>difficulty</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reward</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>hash</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>depth</td>
+                  <td><a href="#uint64">uint64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.SubmitMinedBlockReq">SubmitMinedBlockReq</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>blob</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>blocktemplate_blob with the correct nonce </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="qrl.SubmitMinedBlockResp">SubmitMinedBlockResp</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>It seems there are no special fields for success/error reporting, does gRPC automatically give me something? </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+
+      
+
+      
+
+      
+        <h3 id="qrl.MiningAPI">MiningAPI</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>GetBlockMiningCompatible</td>
+                <td><a href="#qrl.GetBlockMiningCompatibleReq">GetBlockMiningCompatibleReq</a></td>
+                <td><a href="#qrl.GetBlockMiningCompatibleResp">GetBlockMiningCompatibleResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLastBlockHeader</td>
+                <td><a href="#qrl.GetLastBlockHeaderReq">GetLastBlockHeaderReq</a></td>
+                <td><a href="#qrl.GetLastBlockHeaderResp">GetLastBlockHeaderResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>GetBlockToMine</td>
+                <td><a href="#qrl.GetBlockToMineReq">GetBlockToMineReq</a></td>
+                <td><a href="#qrl.GetBlockToMineResp">GetBlockToMineResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SubmitMinedBlock</td>
+                <td><a href="#qrl.SubmitMinedBlockReq">SubmitMinedBlockReq</a></td>
+                <td><a href="#qrl.SubmitMinedBlockResp">SubmitMinedBlockResp</a></td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+    
+
+    <h2 id="scalar-value-types">Scalar Value Types</h2>
+    <table class="scalar-value-types-table">
+      <thead>
+        <tr><td>.proto Type</td><td>Notes</td><td>C++ Type</td><td>Java Type</td><td>Python Type</td></tr>
+      </thead>
+      <tbody>
+        
+          <tr id="double">
+            <td>double</td>
+            <td></td>
+            <td>double</td>
+            <td>double</td>
+            <td>float</td>
+          </tr>
+        
+          <tr id="float">
+            <td>float</td>
+            <td></td>
+            <td>float</td>
+            <td>float</td>
+            <td>float</td>
+          </tr>
+        
+          <tr id="int32">
+            <td>int32</td>
+            <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+          </tr>
+        
+          <tr id="int64">
+            <td>int64</td>
+            <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="uint32">
+            <td>uint32</td>
+            <td>Uses variable-length encoding.</td>
+            <td>uint32</td>
+            <td>int</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="uint64">
+            <td>uint64</td>
+            <td>Uses variable-length encoding.</td>
+            <td>uint64</td>
+            <td>long</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="sint32">
+            <td>sint32</td>
+            <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+          </tr>
+        
+          <tr id="sint64">
+            <td>sint64</td>
+            <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="fixed32">
+            <td>fixed32</td>
+            <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
+            <td>uint32</td>
+            <td>int</td>
+            <td>int</td>
+          </tr>
+        
+          <tr id="fixed64">
+            <td>fixed64</td>
+            <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
+            <td>uint64</td>
+            <td>long</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="sfixed32">
+            <td>sfixed32</td>
+            <td>Always four bytes.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+          </tr>
+        
+          <tr id="sfixed64">
+            <td>sfixed64</td>
+            <td>Always eight bytes.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+          </tr>
+        
+          <tr id="bool">
+            <td>bool</td>
+            <td></td>
+            <td>bool</td>
+            <td>boolean</td>
+            <td>boolean</td>
+          </tr>
+        
+          <tr id="string">
+            <td>string</td>
+            <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
+            <td>string</td>
+            <td>String</td>
+            <td>str/unicode</td>
+          </tr>
+        
+          <tr id="bytes">
+            <td>bytes</td>
+            <td>May contain any arbitrary sequence of bytes.</td>
+            <td>string</td>
+            <td>ByteString</td>
+            <td>str</td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </body>
+</html>
+

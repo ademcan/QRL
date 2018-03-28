@@ -20,6 +20,11 @@ service PublicAPI
     rpc GetKnownPeers (GetKnownPeersReq) returns (GetKnownPeersResp);
 
     rpc GetStats (GetStatsReq) returns (GetStatsResp);
+
+    /**
+     * Returns address state
+     * https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257
+    */
     rpc GetAddressState (GetAddressStateReq) returns (GetAddressStateResp);
     rpc GetObject(GetObjectReq) returns (GetObjectResp);
 

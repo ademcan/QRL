@@ -4,16 +4,31 @@
 ## Table of Contents
 
 - [qrl.proto](#qrl.proto)
+    - [AddressAmount](#qrl.AddressAmount)
     - [AddressList](#qrl.AddressList)
     - [AddressState](#qrl.AddressState)
+    - [AddressState.SlavePksAccessTypeEntry](#qrl.AddressState.SlavePksAccessTypeEntry)
+    - [AddressState.TokensEntry](#qrl.AddressState.TokensEntry)
     - [Block](#qrl.Block)
+    - [BlockDataPoint](#qrl.BlockDataPoint)
     - [BlockExtended](#qrl.BlockExtended)
     - [BlockHeader](#qrl.BlockHeader)
     - [BlockHeaderExtended](#qrl.BlockHeaderExtended)
+    - [BlockHeightData](#qrl.BlockHeightData)
     - [BlockMetaData](#qrl.BlockMetaData)
     - [BlockMetaDataList](#qrl.BlockMetaDataList)
-    - [EphemeralMessage](#qrl.EphemeralMessage)
+    - [BlockNumberMapping](#qrl.BlockNumberMapping)
+    - [CollectEphemeralMessageReq](#qrl.CollectEphemeralMessageReq)
+    - [CollectEphemeralMessageResp](#qrl.CollectEphemeralMessageResp)
+    - [Empty](#qrl.Empty)
+    - [EncryptedEphemeralMessage](#qrl.EncryptedEphemeralMessage)
+    - [EncryptedEphemeralMessage.Channel](#qrl.EncryptedEphemeralMessage.Channel)
+    - [EphemeralChannelPayload](#qrl.EphemeralChannelPayload)
+    - [EphemeralMessagePayload](#qrl.EphemeralMessagePayload)
+    - [EphemeralMetadata](#qrl.EphemeralMetadata)
     - [GenesisBalance](#qrl.GenesisBalance)
+    - [GetAddressFromPKReq](#qrl.GetAddressFromPKReq)
+    - [GetAddressFromPKResp](#qrl.GetAddressFromPKResp)
     - [GetAddressStateReq](#qrl.GetAddressStateReq)
     - [GetAddressStateResp](#qrl.GetAddressStateResp)
     - [GetBlockReq](#qrl.GetBlockReq)
@@ -28,66 +43,62 @@
     - [GetNodeStateResp](#qrl.GetNodeStateResp)
     - [GetObjectReq](#qrl.GetObjectReq)
     - [GetObjectResp](#qrl.GetObjectResp)
-    - [GetStakersReq](#qrl.GetStakersReq)
-    - [GetStakersResp](#qrl.GetStakersResp)
     - [GetStatsReq](#qrl.GetStatsReq)
     - [GetStatsResp](#qrl.GetStatsResp)
-    - [GetWalletReq](#qrl.GetWalletReq)
-    - [GetWalletResp](#qrl.GetWalletResp)
+    - [LRUStateCache](#qrl.LRUStateCache)
+    - [LatticePK](#qrl.LatticePK)
     - [LatticePublicKeyTxnReq](#qrl.LatticePublicKeyTxnReq)
-    - [MR](#qrl.MR)
-    - [MsgObject](#qrl.MsgObject)
+    - [LatticePublicKeys](#qrl.LatticePublicKeys)
+    - [NodeChainState](#qrl.NodeChainState)
+    - [NodeHeaderHash](#qrl.NodeHeaderHash)
     - [NodeInfo](#qrl.NodeInfo)
+    - [P2PAcknowledgement](#qrl.P2PAcknowledgement)
     - [Peer](#qrl.Peer)
-    - [PingReq](#qrl.PingReq)
-    - [PongResp](#qrl.PongResp)
+    - [PeerInfo](#qrl.PeerInfo)
+    - [Peers](#qrl.Peers)
+    - [PushEphemeralMessageReq](#qrl.PushEphemeralMessageReq)
     - [PushTransactionReq](#qrl.PushTransactionReq)
     - [PushTransactionResp](#qrl.PushTransactionResp)
-    - [StakeValidator](#qrl.StakeValidator)
-    - [StakeValidatorsList](#qrl.StakeValidatorsList)
-    - [StakeValidatorsTracker](#qrl.StakeValidatorsTracker)
-    - [StakeValidatorsTracker.ExpiryEntry](#qrl.StakeValidatorsTracker.ExpiryEntry)
-    - [StakeValidatorsTracker.FutureStakeAddressesEntry](#qrl.StakeValidatorsTracker.FutureStakeAddressesEntry)
-    - [StakeValidatorsTracker.FutureSvDictEntry](#qrl.StakeValidatorsTracker.FutureSvDictEntry)
-    - [StakeValidatorsTracker.SvDictEntry](#qrl.StakeValidatorsTracker.SvDictEntry)
-    - [StakerData](#qrl.StakerData)
+    - [SlaveTxnReq](#qrl.SlaveTxnReq)
+    - [StateLoader](#qrl.StateLoader)
+    - [StateObjects](#qrl.StateObjects)
     - [StoredPeers](#qrl.StoredPeers)
-    - [Timestamp](#qrl.Timestamp)
+    - [TokenDetailedList](#qrl.TokenDetailedList)
+    - [TokenList](#qrl.TokenList)
+    - [TokenMetadata](#qrl.TokenMetadata)
+    - [TokenTxnReq](#qrl.TokenTxnReq)
     - [Transaction](#qrl.Transaction)
     - [Transaction.CoinBase](#qrl.Transaction.CoinBase)
-    - [Transaction.Destake](#qrl.Transaction.Destake)
-    - [Transaction.Duplicate](#qrl.Transaction.Duplicate)
     - [Transaction.LatticePublicKey](#qrl.Transaction.LatticePublicKey)
-    - [Transaction.Stake](#qrl.Transaction.Stake)
+    - [Transaction.Message](#qrl.Transaction.Message)
+    - [Transaction.Slave](#qrl.Transaction.Slave)
+    - [Transaction.Token](#qrl.Transaction.Token)
     - [Transaction.Transfer](#qrl.Transaction.Transfer)
-    - [Transaction.Vote](#qrl.Transaction.Vote)
+    - [Transaction.TransferToken](#qrl.Transaction.TransferToken)
     - [TransactionCount](#qrl.TransactionCount)
     - [TransactionCount.CountEntry](#qrl.TransactionCount.CountEntry)
     - [TransactionExtended](#qrl.TransactionExtended)
     - [TransferCoinsReq](#qrl.TransferCoinsReq)
     - [TransferCoinsResp](#qrl.TransferCoinsResp)
-    - [Wallet](#qrl.Wallet)
-    - [WalletStore](#qrl.WalletStore)
-
+    - [TransferTokenTxnReq](#qrl.TransferTokenTxnReq)
+  
     - [GetLatestDataReq.Filter](#qrl.GetLatestDataReq.Filter)
-    - [GetStakersReq.Filter](#qrl.GetStakersReq.Filter)
     - [NodeInfo.State](#qrl.NodeInfo.State)
-    - [Transaction.Type](#qrl.Transaction.Type)
-
-
+    - [PushTransactionResp.ResponseCode](#qrl.PushTransactionResp.ResponseCode)
+  
+  
     - [AdminAPI](#qrl.AdminAPI)
-    - [P2PAPI](#qrl.P2PAPI)
     - [PublicAPI](#qrl.PublicAPI)
-
+  
 
 - [qrlbase.proto](#qrlbase.proto)
     - [GetNodeInfoReq](#qrl.GetNodeInfoReq)
     - [GetNodeInfoResp](#qrl.GetNodeInfoResp)
-
-
-
+  
+  
+  
     - [Base](#qrl.Base)
-
+  
 
 - [qrllegacy.proto](#qrllegacy.proto)
     - [BKData](#qrl.BKData)
@@ -100,11 +111,26 @@
     - [PONGData](#qrl.PONGData)
     - [SYNCData](#qrl.SYNCData)
     - [VEData](#qrl.VEData)
-
+  
     - [LegacyMessage.FuncName](#qrl.LegacyMessage.FuncName)
+  
+  
+  
 
-
-
+- [qrlmining.proto](#qrlmining.proto)
+    - [GetBlockMiningCompatibleReq](#qrl.GetBlockMiningCompatibleReq)
+    - [GetBlockMiningCompatibleResp](#qrl.GetBlockMiningCompatibleResp)
+    - [GetBlockToMineReq](#qrl.GetBlockToMineReq)
+    - [GetBlockToMineResp](#qrl.GetBlockToMineResp)
+    - [GetLastBlockHeaderReq](#qrl.GetLastBlockHeaderReq)
+    - [GetLastBlockHeaderResp](#qrl.GetLastBlockHeaderResp)
+    - [SubmitMinedBlockReq](#qrl.SubmitMinedBlockReq)
+    - [SubmitMinedBlockResp](#qrl.SubmitMinedBlockResp)
+  
+  
+  
+    - [MiningAPI](#qrl.MiningAPI)
+  
 
 - [Scalar Value Types](#scalar-value-types)
 
@@ -114,6 +140,22 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## qrl.proto
+
+
+
+<a name="qrl.AddressAmount"/>
+
+### AddressAmount
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| address | [bytes](#bytes) |  |  |
+| amount | [uint64](#uint64) |  |  |
+
+
+
 
 
 
@@ -143,8 +185,44 @@
 | address | [bytes](#bytes) |  |  |
 | balance | [uint64](#uint64) |  |  |
 | nonce | [uint64](#uint64) |  | FIXME: Discuss. 32 or 64 bits? |
-| pubhashes | [bytes](#bytes) | repeated |  |
+| ots_bitfield | [bytes](#bytes) | repeated |  |
 | transaction_hashes | [bytes](#bytes) | repeated |  |
+| tokens | [AddressState.TokensEntry](#qrl.AddressState.TokensEntry) | repeated |  |
+| latticePK_list | [LatticePK](#qrl.LatticePK) | repeated |  |
+| slave_pks_access_type | [AddressState.SlavePksAccessTypeEntry](#qrl.AddressState.SlavePksAccessTypeEntry) | repeated |  |
+| ots_counter | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="qrl.AddressState.SlavePksAccessTypeEntry"/>
+
+### AddressState.SlavePksAccessTypeEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| key | [string](#string) |  |  |
+| value | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="qrl.AddressState.TokensEntry"/>
+
+### AddressState.TokensEntry
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| key | [string](#string) |  |  |
+| value | [uint64](#uint64) |  |  |
 
 
 
@@ -161,9 +239,29 @@
 | ----- | ---- | ----- | ----------- |
 | header | [BlockHeader](#qrl.BlockHeader) |  |  |
 | transactions | [Transaction](#qrl.Transaction) | repeated |  |
-| dup_transactions | [Transaction](#qrl.Transaction) | repeated | TODO: Review this |
-| vote | [Transaction](#qrl.Transaction) | repeated |  |
 | genesis_balance | [GenesisBalance](#qrl.GenesisBalance) | repeated | This is only applicable to genesis blocks |
+
+
+
+
+
+
+<a name="qrl.BlockDataPoint"/>
+
+### BlockDataPoint
+BlockDataPoint message definition
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| number | [uint64](#uint64) |  | Block number |
+| difficulty | [string](#string) |  | Block difficulty |
+| timestamp | [uint64](#uint64) |  | Block timestamp |
+| time_last | [uint64](#uint64) |  |  |
+| time_movavg | [uint64](#uint64) |  |  |
+| hash_power | [float](#float) |  | Hash power |
+| header_hash | [bytes](#bytes) |  | Block header hash |
+| header_hash_prev | [bytes](#bytes) |  | Previous block&#39;s header hash |
 
 
 
@@ -178,9 +276,10 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| block | [Block](#qrl.Block) |  |  |
-| voted_weight | [uint64](#uint64) |  |  |
-| total_stake_weight | [uint64](#uint64) |  |  |
+| header | [BlockHeader](#qrl.BlockHeader) |  |  |
+| extended_transactions | [TransactionExtended](#qrl.TransactionExtended) | repeated |  |
+| genesis_balance | [GenesisBalance](#qrl.GenesisBalance) | repeated | This is only applicable to genesis blocks |
+| size | [uint64](#uint64) |  |  |
 
 
 
@@ -195,16 +294,15 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| block_number | [uint64](#uint64) |  | Header |
-| epoch | [uint64](#uint64) |  |  |
-| timestamp | [Timestamp](#qrl.Timestamp) |  | FIXME: Temporary |
-| hash_header | [bytes](#bytes) |  |  |
+| hash_header | [bytes](#bytes) |  | Header |
+| block_number | [uint64](#uint64) |  |  |
+| timestamp_seconds | [uint64](#uint64) |  |  |
 | hash_header_prev | [bytes](#bytes) |  |  |
 | reward_block | [uint64](#uint64) |  |  |
 | reward_fee | [uint64](#uint64) |  |  |
 | merkle_root | [bytes](#bytes) |  |  |
-| hash_reveal | [bytes](#bytes) |  |  |
-| stake_selector | [bytes](#bytes) |  |  |
+| mining_nonce | [uint64](#uint64) |  |  |
+| extra_nonce | [uint64](#uint64) |  |  |
 
 
 
@@ -221,8 +319,23 @@
 | ----- | ---- | ----- | ----------- |
 | header | [BlockHeader](#qrl.BlockHeader) |  |  |
 | transaction_count | [TransactionCount](#qrl.TransactionCount) |  |  |
-| voted_weight | [uint64](#uint64) |  |  |
-| total_stake_weight | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="qrl.BlockHeightData"/>
+
+### BlockHeightData
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| block_number | [uint64](#uint64) |  |  |
+| block_headerhash | [bytes](#bytes) |  |  |
+| cumulative_difficulty | [bytes](#bytes) |  |  |
 
 
 
@@ -237,8 +350,11 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| block_number | [uint64](#uint64) |  |  |
-| hash_header | [bytes](#bytes) |  |  |
+| is_orphan | [bool](#bool) |  |  |
+| block_difficulty | [bytes](#bytes) |  |  |
+| cumulative_difficulty | [bytes](#bytes) |  |  |
+| child_headerhashes | [bytes](#bytes) | repeated |  |
+| last_N_headerhashes | [bytes](#bytes) | repeated | Keeps last N headerhashes, for measurement of timestamp difference |
 
 
 
@@ -260,35 +376,142 @@
 
 
 
-<a name="qrl.EphemeralMessage"/>
+<a name="qrl.BlockNumberMapping"/>
 
-### EphemeralMessage
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| id | [bytes](#bytes) |  |  |
-| ttl | [uint64](#uint64) |  |  |
-| data | [bytes](#bytes) |  | Encrypted String containing aes256_symkey, prf512_seed, xmss_address, signature |
-
-
-
-
-
-
-<a name="qrl.EphemeralMessage.Data"/>
-
-### EphemeralMessage.Data
+### BlockNumberMapping
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| aes256_symkey | [bytes](#bytes) |  |  |
-| prf512_seed | [bytes](#bytes) |  |  |
-| xmss_address | [bytes](#bytes) |  |  |
-| xmss_signature | [bytes](#bytes) |  |  |
+| headerhash | [bytes](#bytes) |  |  |
+| prev_headerhash | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="qrl.CollectEphemeralMessageReq"/>
+
+### CollectEphemeralMessageReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| msg_id | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="qrl.CollectEphemeralMessageResp"/>
+
+### CollectEphemeralMessageResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| ephemeral_metadata | [EphemeralMetadata](#qrl.EphemeralMetadata) |  |  |
+
+
+
+
+
+
+<a name="qrl.Empty"/>
+
+### Empty
+Empty message definition
+
+
+
+
+
+
+<a name="qrl.EncryptedEphemeralMessage"/>
+
+### EncryptedEphemeralMessage
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| msg_id | [bytes](#bytes) |  | b&#39;NEW&#39; or PRF |
+| ttl | [uint64](#uint64) |  | Expiry Timestamp in seconds |
+| ttr | [uint64](#uint64) |  | Time to relay |
+| channel | [EncryptedEphemeralMessage.Channel](#qrl.EncryptedEphemeralMessage.Channel) |  |  |
+| nonce | [uint64](#uint64) |  | nonce |
+| payload | [bytes](#bytes) |  | JSON content, encrypted by aes256_symkey |
+
+
+
+
+
+
+<a name="qrl.EncryptedEphemeralMessage.Channel"/>
+
+### EncryptedEphemeralMessage.Channel
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| enc_aes256_symkey | [bytes](#bytes) |  | aes256_symkey encrypted by kyber |
+
+
+
+
+
+
+<a name="qrl.EphemeralChannelPayload"/>
+
+### EphemeralChannelPayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| prf512_seed | [bytes](#bytes) |  | PRF512 seed used for further communication after channel established |
+| dilithium_signature | [bytes](#bytes) |  | Sign hash of (msg_id, ttl, enc_aes256_symkey, prf512_seed, addr_from, |
+| addr_from | [bytes](#bytes) |  | data)
+
+Sender address |
+| data | [bytes](#bytes) |  | Could be anything, plain-text, binary, JSON etc. |
+
+
+
+
+
+
+<a name="qrl.EphemeralMessagePayload"/>
+
+### EphemeralMessagePayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| addr_from | [bytes](#bytes) |  | Sender address |
+| data | [bytes](#bytes) |  | Could be anything, plain-text, binary, JSON etc. |
+
+
+
+
+
+
+<a name="qrl.EphemeralMetadata"/>
+
+### EphemeralMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| encrypted_ephemeral_message_list | [EncryptedEphemeralMessage](#qrl.EncryptedEphemeralMessage) | repeated |  |
 
 
 
@@ -303,8 +526,38 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address | [string](#string) |  | Address is string only here to increase visibility |
+| address | [bytes](#bytes) |  | Address is string only here to increase visibility |
 | balance | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetAddressFromPKReq"/>
+
+### GetAddressFromPKReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pk | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetAddressFromPKResp"/>
+
+### GetAddressFromPKResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| address | [bytes](#bytes) |  |  |
 
 
 
@@ -344,7 +597,7 @@
 <a name="qrl.GetBlockReq"/>
 
 ### GetBlockReq
-
+NOT USED -&gt; RM?
 
 
 | Field | Type | Label | Description |
@@ -360,7 +613,7 @@
 <a name="qrl.GetBlockResp"/>
 
 ### GetBlockResp
-
+NOT USED -&gt; RM?
 
 
 | Field | Type | Label | Description |
@@ -376,7 +629,7 @@
 <a name="qrl.GetKnownPeersReq"/>
 
 ### GetKnownPeersReq
-
+Represents a query to get known peers
 
 
 
@@ -386,13 +639,13 @@
 <a name="qrl.GetKnownPeersResp"/>
 
 ### GetKnownPeersResp
-
+Represents the reply message to known peers query
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| node_info | [NodeInfo](#qrl.NodeInfo) |  |  |
-| known_peers | [Peer](#qrl.Peer) | repeated |  |
+| node_info | [NodeInfo](#qrl.NodeInfo) |  | NodeInfo object containing node state information |
+| known_peers | [Peer](#qrl.Peer) | repeated | List of Peer objects containing peer nodes detailed information |
 
 
 
@@ -461,7 +714,7 @@
 <a name="qrl.GetNodeStateReq"/>
 
 ### GetNodeStateReq
-
+Represents a query to get node state
 
 
 
@@ -471,7 +724,7 @@
 <a name="qrl.GetNodeStateResp"/>
 
 ### GetNodeStateResp
-
+Represents the reply message to node state query
 
 
 | Field | Type | Label | Description |
@@ -509,39 +762,7 @@
 | found | [bool](#bool) |  |  |
 | address_state | [AddressState](#qrl.AddressState) |  |  |
 | transaction | [TransactionExtended](#qrl.TransactionExtended) |  |  |
-| block | [Block](#qrl.Block) |  |  |
-
-
-
-
-
-
-<a name="qrl.GetStakersReq"/>
-
-### GetStakersReq
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| filter | [GetStakersReq.Filter](#qrl.GetStakersReq.Filter) |  | Indicates which group of stakers (current / next) |
-| offset | [uint32](#uint32) |  | Offset in the staker list |
-| quantity | [uint32](#uint32) |  | Number of stakers to retrive. Capped at 100 |
-
-
-
-
-
-
-<a name="qrl.GetStakersResp"/>
-
-### GetStakersResp
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| stakers | [StakerData](#qrl.StakerData) | repeated |  |
+| block_extended | [BlockExtended](#qrl.BlockExtended) |  |  |
 
 
 
@@ -551,7 +772,12 @@
 <a name="qrl.GetStatsReq"/>
 
 ### GetStatsReq
+Represents a query to get statistics about node
 
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| include_timeseries | [bool](#bool) |  | Boolean to define if block timeseries should be included in reply or not |
 
 
 
@@ -561,51 +787,47 @@
 <a name="qrl.GetStatsResp"/>
 
 ### GetStatsResp
-
+Represents the reply message to get statistics about node
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| node_info | [NodeInfo](#qrl.NodeInfo) |  |  |
+| node_info | [NodeInfo](#qrl.NodeInfo) |  | NodeInfo object containing node state information |
 | epoch | [uint64](#uint64) |  | Current epoch |
 | uptime_network | [uint64](#uint64) |  | Indicates uptime in seconds |
-| stakers_count | [uint64](#uint64) |  | Number of active stakers |
-| block_last_reward | [uint64](#uint64) |  |  |
-| block_time_mean | [uint64](#uint64) |  |  |
-| block_time_sd | [uint64](#uint64) |  |  |
-| coins_total_supply | [uint64](#uint64) |  |  |
-| coins_emitted | [uint64](#uint64) |  |  |
-| coins_atstake | [uint64](#uint64) |  |  |
+| block_last_reward | [uint64](#uint64) |  | Block reward |
+| block_time_mean | [uint64](#uint64) |  | Blocktime average |
+| block_time_sd | [uint64](#uint64) |  | Blocktime standrad deviation |
+| coins_total_supply | [uint64](#uint64) |  | Total coins supply |
+| coins_emitted | [uint64](#uint64) |  | Total coins emitted |
+| block_timeseries | [BlockDataPoint](#qrl.BlockDataPoint) | repeated |  |
 
 
 
 
 
 
-<a name="qrl.GetWalletReq"/>
+<a name="qrl.LRUStateCache"/>
 
-### GetWalletReq
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| address | [bytes](#bytes) |  |  |
+### LRUStateCache
 
 
 
 
 
 
-<a name="qrl.GetWalletResp"/>
 
-### GetWalletResp
+<a name="qrl.LatticePK"/>
+
+### LatticePK
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| wallet | [Wallet](#qrl.Wallet) |  | FIXME: Encrypt |
+| txhash | [bytes](#bytes) |  |  |
+| dilithium_pk | [bytes](#bytes) |  |  |
+| kyber_pk | [bytes](#bytes) |  |  |
 
 
 
@@ -620,46 +842,60 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address_from | [bytes](#bytes) |  |  |
+| master_addr | [bytes](#bytes) |  |  |
 | kyber_pk | [bytes](#bytes) |  |  |
 | dilithium_pk | [bytes](#bytes) |  |  |
+| fee | [uint64](#uint64) |  |  |
 | xmss_pk | [bytes](#bytes) |  |  |
-| xmss_ots_index | [uint64](#uint64) |  |  |
 
 
 
 
 
 
-<a name="qrl.MR"/>
+<a name="qrl.LatticePublicKeys"/>
 
-### MR
-FIXME: This is legacy. Plan removal
+### LatticePublicKeys
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| hash | [bytes](#bytes) |  | FIXME: rename this to block_headerhash |
-| type | [string](#string) |  | FIXME: type/string what is this |
-| stake_selector | [bytes](#bytes) |  |  |
+| lattice_keys | [Transaction](#qrl.Transaction) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.NodeChainState"/>
+
+### NodeChainState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
 | block_number | [uint64](#uint64) |  |  |
-| prev_headerhash | [bytes](#bytes) |  |  |
-| reveal_hash | [bytes](#bytes) |  |  |
+| header_hash | [bytes](#bytes) |  |  |
+| cumulative_difficulty | [bytes](#bytes) |  |  |
+| timestamp | [uint64](#uint64) |  |  |
 
 
 
 
 
 
-<a name="qrl.MsgObject"/>
+<a name="qrl.NodeHeaderHash"/>
 
-### MsgObject
+### NodeHeaderHash
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| ephemeral | [EphemeralMessage](#qrl.EphemeralMessage) |  | Overlapping - objects used for 2-way exchanges P2PRequest request = 1; P2PResponse response = 2; |
+| block_number | [uint64](#uint64) |  |  |
+| headerhashes | [bytes](#bytes) | repeated |  |
 
 
 
@@ -681,8 +917,22 @@ FIXME: This is legacy. Plan removal
 | uptime | [uint64](#uint64) |  | Uptime in seconds |
 | block_height | [uint64](#uint64) |  |  |
 | block_last_hash | [bytes](#bytes) |  |  |
-| stake_enabled | [bool](#bool) |  |  |
 | network_id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="qrl.P2PAcknowledgement"/>
+
+### P2PAcknowledgement
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| bytes_processed | [uint32](#uint32) |  |  |
 
 
 
@@ -704,20 +954,49 @@ FIXME: This is legacy. Plan removal
 
 
 
-<a name="qrl.PingReq"/>
+<a name="qrl.PeerInfo"/>
 
-### PingReq
-
-
+### PeerInfo
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_ip | [bytes](#bytes) |  |  |
+| port | [uint32](#uint32) |  |  |
+| banned_timestamp | [uint32](#uint32) |  |  |
+| credibility | [uint32](#uint32) |  |  |
+| last_connections_timestamp | [uint32](#uint32) | repeated |  |
 
 
-<a name="qrl.PongResp"/>
 
-### PongResp
 
+
+
+<a name="qrl.Peers"/>
+
+### Peers
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_info_list | [PeerInfo](#qrl.PeerInfo) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.PushEphemeralMessageReq"/>
+
+### PushEphemeralMessageReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| ephemeral_message | [EncryptedEphemeralMessage](#qrl.EncryptedEphemeralMessage) |  |  |
 
 
 
@@ -747,143 +1026,61 @@ FIXME: This is legacy. Plan removal
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| some_response | [string](#string) |  |  |
+| error_code | [PushTransactionResp.ResponseCode](#qrl.PushTransactionResp.ResponseCode) |  |  |
+| error_description | [string](#string) |  |  |
+| tx_hash | [bytes](#bytes) |  |  |
 
 
 
 
 
 
-<a name="qrl.StakeValidator"/>
+<a name="qrl.SlaveTxnReq"/>
 
-### StakeValidator
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| address | [bytes](#bytes) |  |  |
-| slave_public_key | [bytes](#bytes) |  |  |
-| terminator_hash | [bytes](#bytes) |  |  |
-| balance | [uint64](#uint64) |  |  |
-| activation_blocknumber | [uint64](#uint64) |  |  |
-| nonce | [uint64](#uint64) |  |  |
-| is_banned | [bool](#bool) |  |  |
-| is_active | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="qrl.StakeValidatorsList"/>
-
-### StakeValidatorsList
+### SlaveTxnReq
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| stake_validators | [StakeValidator](#qrl.StakeValidator) | repeated |  |
+| master_addr | [bytes](#bytes) |  |  |
+| slave_pks | [bytes](#bytes) | repeated |  |
+| access_types | [uint32](#uint32) | repeated |  |
+| fee | [uint64](#uint64) |  |  |
+| xmss_pk | [bytes](#bytes) |  |  |
 
 
 
 
 
 
-<a name="qrl.StakeValidatorsTracker"/>
+<a name="qrl.StateLoader"/>
 
-### StakeValidatorsTracker
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| sv_dict | [StakeValidatorsTracker.SvDictEntry](#qrl.StakeValidatorsTracker.SvDictEntry) | repeated |  |
-| future_stake_addresses | [StakeValidatorsTracker.FutureStakeAddressesEntry](#qrl.StakeValidatorsTracker.FutureStakeAddressesEntry) | repeated |  |
-| expiry | [StakeValidatorsTracker.ExpiryEntry](#qrl.StakeValidatorsTracker.ExpiryEntry) | repeated |  |
-| future_sv_dict | [StakeValidatorsTracker.FutureSvDictEntry](#qrl.StakeValidatorsTracker.FutureSvDictEntry) | repeated |  |
-| total_stake_amount | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="qrl.StakeValidatorsTracker.ExpiryEntry"/>
-
-### StakeValidatorsTracker.ExpiryEntry
+### StateLoader
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| key | [uint64](#uint64) |  |  |
-| value | [AddressList](#qrl.AddressList) |  |  |
+| addresses | [bytes](#bytes) | repeated |  |
+| token_txhash | [bytes](#bytes) | repeated |  |
+| txhash | [bytes](#bytes) | repeated |  |
+| total_coin_supply | [uint64](#uint64) |  |  |
 
 
 
 
 
 
-<a name="qrl.StakeValidatorsTracker.FutureStakeAddressesEntry"/>
+<a name="qrl.StateObjects"/>
 
-### StakeValidatorsTracker.FutureStakeAddressesEntry
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| key | [string](#string) |  |  |
-| value | [StakeValidator](#qrl.StakeValidator) |  |  |
-
-
-
-
-
-
-<a name="qrl.StakeValidatorsTracker.FutureSvDictEntry"/>
-
-### StakeValidatorsTracker.FutureSvDictEntry
+### StateObjects
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| key | [uint64](#uint64) |  |  |
-| value | [StakeValidatorsList](#qrl.StakeValidatorsList) |  |  |
-
-
-
-
-
-
-<a name="qrl.StakeValidatorsTracker.SvDictEntry"/>
-
-### StakeValidatorsTracker.SvDictEntry
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| key | [string](#string) |  |  |
-| value | [StakeValidator](#qrl.StakeValidator) |  |  |
-
-
-
-
-
-
-<a name="qrl.StakerData"/>
-
-### StakerData
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| address_state | [AddressState](#qrl.AddressState) |  |  |
-| terminator_hash | [bytes](#bytes) |  |  |
+| state_loaders | [bytes](#bytes) | repeated |  |
 
 
 
@@ -905,17 +1102,68 @@ FIXME: This is legacy. Plan removal
 
 
 
-<a name="qrl.Timestamp"/>
+<a name="qrl.TokenDetailedList"/>
 
-### Timestamp
-TODO: Avoid using timestamp until the github issue is fixed
-import &#34;google/protobuf/timestamp.proto&#34;;
+### TokenDetailedList
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| seconds | [int64](#int64) |  |  |
-| nanos | [int32](#int32) |  |  |
+| extended_tokens | [TransactionExtended](#qrl.TransactionExtended) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.TokenList"/>
+
+### TokenList
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_txhash | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.TokenMetadata"/>
+
+### TokenMetadata
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_txhash | [bytes](#bytes) |  |  |
+| transfer_token_tx_hashes | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.TokenTxnReq"/>
+
+### TokenTxnReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| master_addr | [bytes](#bytes) |  |  |
+| symbol | [bytes](#bytes) |  |  |
+| name | [bytes](#bytes) |  |  |
+| owner | [bytes](#bytes) |  |  |
+| decimals | [uint64](#uint64) |  |  |
+| initial_balances | [AddressAmount](#qrl.AddressAmount) | repeated |  |
+| fee | [uint64](#uint64) |  |  |
+| xmss_pk | [bytes](#bytes) |  |  |
 
 
 
@@ -930,19 +1178,19 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [Transaction.Type](#qrl.Transaction.Type) |  |  |
-| nonce | [uint64](#uint64) |  |  |
-| addr_from | [bytes](#bytes) |  |  |
+| master_addr | [bytes](#bytes) |  |  |
+| fee | [uint64](#uint64) |  |  |
 | public_key | [bytes](#bytes) |  |  |
-| transaction_hash | [bytes](#bytes) |  |  |
-| ots_key | [uint32](#uint32) |  |  |
 | signature | [bytes](#bytes) |  |  |
+| nonce | [uint64](#uint64) |  |  |
+| transaction_hash | [bytes](#bytes) |  |  |
 | transfer | [Transaction.Transfer](#qrl.Transaction.Transfer) |  |  |
-| stake | [Transaction.Stake](#qrl.Transaction.Stake) |  |  |
 | coinbase | [Transaction.CoinBase](#qrl.Transaction.CoinBase) |  |  |
 | latticePK | [Transaction.LatticePublicKey](#qrl.Transaction.LatticePublicKey) |  |  |
-| duplicate | [Transaction.Duplicate](#qrl.Transaction.Duplicate) |  |  |
-| vote | [Transaction.Vote](#qrl.Transaction.Vote) |  |  |
+| message | [Transaction.Message](#qrl.Transaction.Message) |  |  |
+| token | [Transaction.Token](#qrl.Transaction.Token) |  |  |
+| transfer_token | [Transaction.TransferToken](#qrl.Transaction.TransferToken) |  |  |
+| slave | [Transaction.Slave](#qrl.Transaction.Slave) |  |  |
 
 
 
@@ -965,36 +1213,6 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 
 
-<a name="qrl.Transaction.Destake"/>
-
-### Transaction.Destake
-
-
-
-
-
-
-
-<a name="qrl.Transaction.Duplicate"/>
-
-### Transaction.Duplicate
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| block_number | [uint64](#uint64) |  |  |
-| prev_header_hash | [uint64](#uint64) |  |  |
-| coinbase1_hhash | [bytes](#bytes) |  |  |
-| coinbase2_hhash | [bytes](#bytes) |  |  |
-| coinbase1 | [Transaction](#qrl.Transaction) |  |  |
-| coinbase2 | [Transaction](#qrl.Transaction) |  |  |
-
-
-
-
-
-
 <a name="qrl.Transaction.LatticePublicKey"/>
 
 ### Transaction.LatticePublicKey
@@ -1011,17 +1229,50 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 
 
-<a name="qrl.Transaction.Stake"/>
+<a name="qrl.Transaction.Message"/>
 
-### Transaction.Stake
+### Transaction.Message
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| activation_blocknumber | [uint64](#uint64) |  |  |
-| slavePK | [bytes](#bytes) |  |  |
-| hash | [bytes](#bytes) |  |  |
+| message_hash | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="qrl.Transaction.Slave"/>
+
+### Transaction.Slave
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| slave_pks | [bytes](#bytes) | repeated |  |
+| access_types | [uint32](#uint32) | repeated |  |
+
+
+
+
+
+
+<a name="qrl.Transaction.Token"/>
+
+### Transaction.Token
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| symbol | [bytes](#bytes) |  |  |
+| name | [bytes](#bytes) |  |  |
+| owner | [bytes](#bytes) |  |  |
+| decimals | [uint64](#uint64) |  |  |
+| initial_balances | [AddressAmount](#qrl.AddressAmount) | repeated |  |
 
 
 
@@ -1036,25 +1287,25 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| addr_to | [bytes](#bytes) |  |  |
-| amount | [uint64](#uint64) |  |  |
-| fee | [uint64](#uint64) |  |  |
+| addrs_to | [bytes](#bytes) | repeated |  |
+| amounts | [uint64](#uint64) | repeated |  |
 
 
 
 
 
 
-<a name="qrl.Transaction.Vote"/>
+<a name="qrl.Transaction.TransferToken"/>
 
-### Transaction.Vote
+### Transaction.TransferToken
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| block_number | [uint64](#uint64) |  |  |
-| hash_header | [bytes](#bytes) |  |  |
+| token_txhash | [bytes](#bytes) |  |  |
+| addrs_to | [bytes](#bytes) | repeated |  |
+| amounts | [uint64](#uint64) | repeated |  |
 
 
 
@@ -1102,6 +1353,8 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 | ----- | ---- | ----- | ----------- |
 | header | [BlockHeader](#qrl.BlockHeader) |  |  |
 | tx | [Transaction](#qrl.Transaction) |  |  |
+| addr_from | [bytes](#bytes) |  |  |
+| size | [uint64](#uint64) |  |  |
 
 
 
@@ -1116,12 +1369,11 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address_from | [bytes](#bytes) |  | Transaction source address |
-| address_to | [bytes](#bytes) |  | Transaction destination address |
-| amount | [uint64](#uint64) |  | Amount. It should be expressed in Shor |
+| master_addr | [bytes](#bytes) |  | Transaction source address |
+| addresses_to | [bytes](#bytes) | repeated | Transaction destination address |
+| amounts | [uint64](#uint64) | repeated | Amount. It should be expressed in Shor |
 | fee | [uint64](#uint64) |  | Fee. It should be expressed in Shor |
 | xmss_pk | [bytes](#bytes) |  | XMSS Public key |
-| xmss_ots_index | [uint64](#uint64) |  | XMSS One time signature index |
 
 
 
@@ -1136,45 +1388,33 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| transaction_unsigned | [Transaction](#qrl.Transaction) |  |  |
+| extended_transaction_unsigned | [TransactionExtended](#qrl.TransactionExtended) |  |  |
 
 
 
 
 
 
-<a name="qrl.Wallet"/>
+<a name="qrl.TransferTokenTxnReq"/>
 
-### Wallet
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| address | [string](#string) |  | FIXME move to bytes |
-| mnemonic | [string](#string) |  |  |
-| xmss_index | [int32](#int32) |  |  |
-
-
-
-
-
-
-<a name="qrl.WalletStore"/>
-
-### WalletStore
+### TransferTokenTxnReq
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| wallets | [Wallet](#qrl.Wallet) | repeated |  |
+| master_addr | [bytes](#bytes) |  |  |
+| addresses_to | [bytes](#bytes) | repeated |  |
+| token_txhash | [bytes](#bytes) |  |  |
+| amounts | [uint64](#uint64) | repeated |  |
+| fee | [uint64](#uint64) |  |  |
+| xmss_pk | [bytes](#bytes) |  |  |
 
 
 
 
 
-
+ 
 
 
 <a name="qrl.GetLatestDataReq.Filter"/>
@@ -1188,18 +1428,6 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 | BLOCKHEADERS | 1 |  |
 | TRANSACTIONS | 2 |  |
 | TRANSACTIONS_UNCONFIRMED | 3 |  |
-
-
-
-<a name="qrl.GetStakersReq.Filter"/>
-
-### GetStakersReq.Filter
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| CURRENT | 0 |  |
-| NEXT | 1 |  |
 
 
 
@@ -1218,26 +1446,22 @@ import &#34;google/protobuf/timestamp.proto&#34;;
 
 
 
-<a name="qrl.Transaction.Type"/>
+<a name="qrl.PushTransactionResp.ResponseCode"/>
 
-### Transaction.Type
+### PushTransactionResp.ResponseCode
 
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | UNKNOWN | 0 |  |
-| TRANSFER | 1 |  |
-| STAKE | 2 |  |
-| DESTAKE | 3 |  |
-| COINBASE | 4 |  |
-| LATTICE | 5 |  |
-| DUPLICATE | 6 |  |
-| VOTE | 7 |  |
+| ERROR | 1 |  |
+| VALIDATION_FAILED | 2 |  |
+| SUBMITTED | 3 |  |
 
 
+ 
 
-
-
+ 
 
 
 <a name="qrl.AdminAPI"/>
@@ -1247,20 +1471,6 @@ This is a place holder for testing/instrumentation APIs
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| GetLocalAddresses | [GetLocalAddressesReq](#qrl.GetLocalAddressesReq) | [GetLocalAddressesResp](#qrl.GetLocalAddressesReq) | FIXME: Use TLS and some signature scheme to validate the cli? At the moment, it will run locally |
-
-
-<a name="qrl.P2PAPI"/>
-
-### P2PAPI
-This service describes the P2P API
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| GetNodeState | [GetNodeStateReq](#qrl.GetNodeStateReq) | [GetNodeStateResp](#qrl.GetNodeStateReq) |  |
-| GetKnownPeers | [GetKnownPeersReq](#qrl.GetKnownPeersReq) | [GetKnownPeersResp](#qrl.GetKnownPeersReq) |  |
-| GetBlock | [GetBlockReq](#qrl.GetBlockReq) | [GetBlockResp](#qrl.GetBlockReq) | rpc PublishBlock(PublishBlockReq) returns (PublishBlockResp); |
-| ObjectExchange | [MsgObject](#qrl.MsgObject) | [MsgObject](#qrl.MsgObject) | A bidirectional streaming channel is used to avoid any firewalling/NAT issues. |
 
 
 <a name="qrl.PublicAPI"/>
@@ -1273,15 +1483,21 @@ This service describes the Public API used by clients (wallet/cli/etc)
 | GetNodeState | [GetNodeStateReq](#qrl.GetNodeStateReq) | [GetNodeStateResp](#qrl.GetNodeStateReq) |  |
 | GetKnownPeers | [GetKnownPeersReq](#qrl.GetKnownPeersReq) | [GetKnownPeersResp](#qrl.GetKnownPeersReq) |  |
 | GetStats | [GetStatsReq](#qrl.GetStatsReq) | [GetStatsResp](#qrl.GetStatsReq) |  |
-| GetAddressState | [GetAddressStateReq](#qrl.GetAddressStateReq) | [GetAddressStateResp](#qrl.GetAddressStateReq) |  |
+| GetAddressState | [GetAddressStateReq](#qrl.GetAddressStateReq) | [GetAddressStateResp](#qrl.GetAddressStateReq) | Returns address state https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257 |
 | GetObject | [GetObjectReq](#qrl.GetObjectReq) | [GetObjectResp](#qrl.GetObjectReq) |  |
 | GetLatestData | [GetLatestDataReq](#qrl.GetLatestDataReq) | [GetLatestDataResp](#qrl.GetLatestDataReq) |  |
-| GetStakers | [GetStakersReq](#qrl.GetStakersReq) | [GetStakersResp](#qrl.GetStakersReq) |  |
 | TransferCoins | [TransferCoinsReq](#qrl.TransferCoinsReq) | [TransferCoinsResp](#qrl.TransferCoinsReq) |  |
 | PushTransaction | [PushTransactionReq](#qrl.PushTransactionReq) | [PushTransactionResp](#qrl.PushTransactionReq) |  |
+| GetTokenTxn | [TokenTxnReq](#qrl.TokenTxnReq) | [TransferCoinsResp](#qrl.TokenTxnReq) |  |
+| GetTransferTokenTxn | [TransferTokenTxnReq](#qrl.TransferTokenTxnReq) | [TransferCoinsResp](#qrl.TransferTokenTxnReq) |  |
+| GetSlaveTxn | [SlaveTxnReq](#qrl.SlaveTxnReq) | [TransferCoinsResp](#qrl.SlaveTxnReq) |  |
 | GetLatticePublicKeyTxn | [LatticePublicKeyTxnReq](#qrl.LatticePublicKeyTxnReq) | [TransferCoinsResp](#qrl.LatticePublicKeyTxnReq) |  |
+| GetAddressFromPK | [GetAddressFromPKReq](#qrl.GetAddressFromPKReq) | [GetAddressFromPKResp](#qrl.GetAddressFromPKReq) |  |
+| PushEphemeralMessage | [PushEphemeralMessageReq](#qrl.PushEphemeralMessageReq) | [PushTransactionResp](#qrl.PushEphemeralMessageReq) | ------- Ephemeral API ------- |
+| CollectEphemeralMessage | [CollectEphemeralMessageReq](#qrl.CollectEphemeralMessageReq) | [CollectEphemeralMessageResp](#qrl.CollectEphemeralMessageReq) | ------------------------------ |
+| GetTokenDetailedList | [Empty](#qrl.Empty) | [TokenDetailedList](#qrl.Empty) |  |
 
-
+ 
 
 
 
@@ -1317,11 +1533,11 @@ This service describes the Public API used by clients (wallet/cli/etc)
 
 
 
+ 
 
+ 
 
-
-
-
+ 
 
 
 <a name="qrl.Base"/>
@@ -1333,7 +1549,7 @@ This service describes the Public API used by clients (wallet/cli/etc)
 | ----------- | ------------ | ------------- | ------------|
 | GetNodeInfo | [GetNodeInfoReq](#qrl.GetNodeInfoReq) | [GetNodeInfoResp](#qrl.GetNodeInfoReq) |  |
 
-
+ 
 
 
 
@@ -1386,14 +1602,28 @@ Adding old code to refactor while keeping things working
 | func_name | [LegacyMessage.FuncName](#qrl.LegacyMessage.FuncName) |  |  |
 | noData | [NoData](#qrl.NoData) |  |  |
 | veData | [VEData](#qrl.VEData) |  |  |
+| plData | [PLData](#qrl.PLData) |  |  |
 | pongData | [PONGData](#qrl.PONGData) |  |  |
 | mrData | [MRData](#qrl.MRData) |  |  |
-| sfmData | [MRData](#qrl.MRData) |  |  |
-| bkData | [BKData](#qrl.BKData) |  |  |
+| block | [Block](#qrl.Block) |  |  |
 | fbData | [FBData](#qrl.FBData) |  |  |
 | pbData | [PBData](#qrl.PBData) |  |  |
-| pbbData | [PBData](#qrl.PBData) |  |  |
+| bhData | [BlockHeightData](#qrl.BlockHeightData) |  |  |
+| stData | [Transaction](#qrl.Transaction) |  |  |
+| dstData | [Transaction](#qrl.Transaction) |  |  |
+| dtData | [Transaction](#qrl.Transaction) |  |  |
+| txData | [Transaction](#qrl.Transaction) |  |  |
+| vtData | [Transaction](#qrl.Transaction) |  |  |
+| mtData | [Transaction](#qrl.Transaction) |  |  |
+| tkData | [Transaction](#qrl.Transaction) |  |  |
+| ttData | [Transaction](#qrl.Transaction) |  |  |
+| ltData | [Transaction](#qrl.Transaction) |  |  |
+| slData | [Transaction](#qrl.Transaction) |  |  |
+| ephData | [EncryptedEphemeralMessage](#qrl.EncryptedEphemeralMessage) |  |  |
 | syncData | [SYNCData](#qrl.SYNCData) |  |  |
+| chainStateData | [NodeChainState](#qrl.NodeChainState) |  |  |
+| nodeHeaderHash | [NodeHeaderHash](#qrl.NodeHeaderHash) |  |  |
+| p2pAckData | [P2PAcknowledgement](#qrl.P2PAcknowledgement) |  |  |
 
 
 
@@ -1438,7 +1668,6 @@ Adding old code to refactor while keeping things working
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| index | [uint64](#uint64) |  |  |
 | block | [Block](#qrl.Block) |  |  |
 
 
@@ -1477,6 +1706,11 @@ Adding old code to refactor while keeping things working
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [string](#string) |  |  |
+
+
 
 
 
@@ -1491,12 +1725,13 @@ Adding old code to refactor while keeping things working
 | ----- | ---- | ----- | ----------- |
 | version | [string](#string) |  |  |
 | genesis_prev_hash | [bytes](#bytes) |  |  |
+| rate_limit | [uint64](#uint64) |  |  |
 
 
 
 
 
-
+ 
 
 
 <a name="qrl.LegacyMessage.FuncName"/>
@@ -1508,26 +1743,195 @@ Adding old code to refactor while keeping things working
 | ---- | ------ | ----------- |
 | VE | 0 | Version |
 | PL | 1 | Peers List |
-| PONG | 2 | Pong |
+| PONG | 2 | Pong TODO: Obsolete |
 | MR | 3 | Message received |
 | SFM | 4 | Send Full Message |
 | BK | 5 | Block |
 | FB | 6 | Fetch request for block |
 | PB | 7 | Push Block |
-| PBB | 8 | Push Block Buffer |
+| BH | 8 | Block Height |
 | ST | 9 | Stake Transaction |
 | DST | 10 | Destake Transaction |
 | DT | 11 | Duplicate Transaction |
 | TX | 12 | Transfer Transaction |
 | VT | 13 | Vote |
-| SYNC | 14 | Add into synced list, if the node replies |
+| LT | 14 | Lattice Transaction |
+| EPH | 15 | Ephemeral |
+| MT | 16 | Message Transaction |
+| TK | 17 | Token Transaction |
+| TT | 18 | Transfer Token Transaction |
+| SL | 19 | Slave Transaction |
+| SYNC | 20 | Add into synced list, if the node replies |
+| CHAINSTATE | 21 | Chain State |
+| HEADERHASHES | 22 |  |
+| P2P_ACK | 23 | P2P Acknowledgement |
+
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="qrlmining.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## qrlmining.proto
+
+
+
+<a name="qrl.GetBlockMiningCompatibleReq"/>
+
+### GetBlockMiningCompatibleReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| height | [uint64](#uint64) |  | Used for getlastblockheader and getblockheaderbyheight
+
+if height = 0, this means getlastblockheader |
 
 
 
 
 
 
+<a name="qrl.GetBlockMiningCompatibleResp"/>
 
+### GetBlockMiningCompatibleResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| blockheader | [BlockHeader](#qrl.BlockHeader) |  |  |
+| blockmetadata | [BlockMetaData](#qrl.BlockMetaData) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetBlockToMineReq"/>
+
+### GetBlockToMineReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wallet_address | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetBlockToMineResp"/>
+
+### GetBlockToMineResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| blocktemplate_blob | [string](#string) |  | max length 112 bytes, otherwise xmr-stak will hiccup |
+| difficulty | [uint64](#uint64) |  | difficulty that the new block should meet |
+| height | [uint64](#uint64) |  |  |
+| reserved_offset | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetLastBlockHeaderReq"/>
+
+### GetLastBlockHeaderReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| height | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="qrl.GetLastBlockHeaderResp"/>
+
+### GetLastBlockHeaderResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| difficulty | [uint64](#uint64) |  |  |
+| height | [uint64](#uint64) |  |  |
+| timestamp | [uint64](#uint64) |  |  |
+| reward | [uint64](#uint64) |  |  |
+| hash | [string](#string) |  |  |
+| depth | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="qrl.SubmitMinedBlockReq"/>
+
+### SubmitMinedBlockReq
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| blob | [bytes](#bytes) |  | blocktemplate_blob with the correct nonce |
+
+
+
+
+
+
+<a name="qrl.SubmitMinedBlockResp"/>
+
+### SubmitMinedBlockResp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| error | [bool](#bool) |  | It seems there are no special fields for success/error reporting, does gRPC automatically give me something? |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="qrl.MiningAPI"/>
+
+### MiningAPI
+
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| GetBlockMiningCompatible | [GetBlockMiningCompatibleReq](#qrl.GetBlockMiningCompatibleReq) | [GetBlockMiningCompatibleResp](#qrl.GetBlockMiningCompatibleReq) |  |
+| GetLastBlockHeader | [GetLastBlockHeaderReq](#qrl.GetLastBlockHeaderReq) | [GetLastBlockHeaderResp](#qrl.GetLastBlockHeaderReq) |  |
+| GetBlockToMine | [GetBlockToMineReq](#qrl.GetBlockToMineReq) | [GetBlockToMineResp](#qrl.GetBlockToMineReq) |  |
+| SubmitMinedBlock | [SubmitMinedBlockReq](#qrl.SubmitMinedBlockReq) | [SubmitMinedBlockResp](#qrl.SubmitMinedBlockReq) |  |
+
+ 
 
 
 
