@@ -151,8 +151,8 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address | [bytes](#bytes) |  |  |
-| amount | [uint64](#uint64) |  |  |
+| address | [bytes](#bytes) |  | QRL wallet address |
+| amount | [uint64](#uint64) |  | QRL wallet amount |
 
 
 
@@ -182,13 +182,13 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address | [bytes](#bytes) |  |  |
-| balance | [uint64](#uint64) |  |  |
+| address | [bytes](#bytes) |  | QRL wallet address |
+| balance | [uint64](#uint64) |  | QRL wallet balance |
 | nonce | [uint64](#uint64) |  | FIXME: Discuss. 32 or 64 bits? |
 | ots_bitfield | [bytes](#bytes) | repeated |  |
-| transaction_hashes | [bytes](#bytes) | repeated |  |
-| tokens | [AddressState.TokensEntry](#qrl.AddressState.TokensEntry) | repeated |  |
-| latticePK_list | [LatticePK](#qrl.LatticePK) | repeated |  |
+| transaction_hashes | [bytes](#bytes) | repeated | Address transaction hashes |
+| tokens | [AddressState.TokensEntry](#qrl.AddressState.TokensEntry) | repeated | Address tokens |
+| latticePK_list | [LatticePK](#qrl.LatticePK) | repeated | Address Lattice PKs |
 | slave_pks_access_type | [AddressState.SlavePksAccessTypeEntry](#qrl.AddressState.SlavePksAccessTypeEntry) | repeated |  |
 | ots_counter | [uint64](#uint64) |  |  |
 
@@ -237,8 +237,8 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| header | [BlockHeader](#qrl.BlockHeader) |  |  |
-| transactions | [Transaction](#qrl.Transaction) | repeated |  |
+| header | [BlockHeader](#qrl.BlockHeader) |  | Block header |
+| transactions | [Transaction](#qrl.Transaction) | repeated | Block transactions list |
 | genesis_balance | [GenesisBalance](#qrl.GenesisBalance) | repeated | This is only applicable to genesis blocks |
 
 
@@ -255,11 +255,11 @@ BlockDataPoint message definition
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | number | [uint64](#uint64) |  | Block number |
-| difficulty | [string](#string) |  | Block difficulty |
-| timestamp | [uint64](#uint64) |  | Block timestamp |
+| difficulty | [string](#string) |  | Difficulty at current block |
+| timestamp | [uint64](#uint64) |  | Block timestamp in seconds |
 | time_last | [uint64](#uint64) |  |  |
 | time_movavg | [uint64](#uint64) |  |  |
-| hash_power | [float](#float) |  | Hash power |
+| hash_power | [float](#float) |  | Hash power (hps) |
 | header_hash | [bytes](#bytes) |  | Block header hash |
 | header_hash_prev | [bytes](#bytes) |  | Previous block&#39;s header hash |
 
@@ -294,12 +294,14 @@ BlockDataPoint message definition
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| hash_header | [bytes](#bytes) |  | Header |
-| block_number | [uint64](#uint64) |  |  |
-| timestamp_seconds | [uint64](#uint64) |  |  |
-| hash_header_prev | [bytes](#bytes) |  |  |
-| reward_block | [uint64](#uint64) |  |  |
-| reward_fee | [uint64](#uint64) |  |  |
+| hash_header | [bytes](#bytes) |  | Header
+
+Block&#39;s header hash |
+| block_number | [uint64](#uint64) |  | Block number |
+| timestamp_seconds | [uint64](#uint64) |  | Block timestamp in seconds |
+| hash_header_prev | [bytes](#bytes) |  | Previous block&#39;s header hash |
+| reward_block | [uint64](#uint64) |  | Block&#39;s reward in Shor |
+| reward_fee | [uint64](#uint64) |  | Block reward&#39;s fee in Shor |
 | merkle_root | [bytes](#bytes) |  |  |
 | mining_nonce | [uint64](#uint64) |  |  |
 | extra_nonce | [uint64](#uint64) |  |  |
@@ -542,7 +544,7 @@ Sender address |
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| pk | [bytes](#bytes) |  |  |
+| pk | [bytes](#bytes) |  | XMSS Public key |
 
 
 
@@ -557,7 +559,7 @@ Sender address |
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| address | [bytes](#bytes) |  |  |
+| address | [bytes](#bytes) |  | QRL wallet address |
 
 
 
@@ -618,8 +620,8 @@ NOT USED -&gt; RM?
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| node_info | [NodeInfo](#qrl.NodeInfo) |  |  |
-| block | [Block](#qrl.Block) |  |  |
+| node_info | [NodeInfo](#qrl.NodeInfo) |  | NodeInfo object containing node state information |
+| block | [Block](#qrl.Block) |  | Block of interest |
 
 
 
@@ -660,7 +662,7 @@ Represents the reply message to known peers query
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| filter | [GetLatestDataReq.Filter](#qrl.GetLatestDataReq.Filter) |  |  |
+| filter | [GetLatestDataReq.Filter](#qrl.GetLatestDataReq.Filter) |  | Data filter one of (ALL, BLOCKHEADERS, TRANSACTIONS, TRANSACTIONS_UNCONFIRMED) |
 | offset | [uint32](#uint32) |  | Offset in the result list (works backwards in this case) |
 | quantity | [uint32](#uint32) |  | Number of items to retrive. Capped at 100 |
 
@@ -795,12 +797,12 @@ Represents the reply message to get statistics about node
 | node_info | [NodeInfo](#qrl.NodeInfo) |  | NodeInfo object containing node state information |
 | epoch | [uint64](#uint64) |  | Current epoch |
 | uptime_network | [uint64](#uint64) |  | Indicates uptime in seconds |
-| block_last_reward | [uint64](#uint64) |  | Block reward |
+| block_last_reward | [uint64](#uint64) |  | Block reward in Shor |
 | block_time_mean | [uint64](#uint64) |  | Blocktime average |
-| block_time_sd | [uint64](#uint64) |  | Blocktime standrad deviation |
+| block_time_sd | [uint64](#uint64) |  | Blocktime standard deviation |
 | coins_total_supply | [uint64](#uint64) |  | Total coins supply |
 | coins_emitted | [uint64](#uint64) |  | Total coins emitted |
-| block_timeseries | [BlockDataPoint](#qrl.BlockDataPoint) | repeated |  |
+| block_timeseries | [BlockDataPoint](#qrl.BlockDataPoint) | repeated | Blocks time series of the recent blocks |
 
 
 
@@ -825,9 +827,9 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| txhash | [bytes](#bytes) |  |  |
-| dilithium_pk | [bytes](#bytes) |  |  |
-| kyber_pk | [bytes](#bytes) |  |  |
+| txhash | [bytes](#bytes) |  | Transaction hash |
+| dilithium_pk | [bytes](#bytes) |  | Public Key generated from Dilithium |
+| kyber_pk | [bytes](#bytes) |  | Public Key generated from Kyber |
 
 
 
@@ -842,11 +844,11 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| master_addr | [bytes](#bytes) |  |  |
-| kyber_pk | [bytes](#bytes) |  |  |
-| dilithium_pk | [bytes](#bytes) |  |  |
-| fee | [uint64](#uint64) |  |  |
-| xmss_pk | [bytes](#bytes) |  |  |
+| master_addr | [bytes](#bytes) |  | Transaction source address |
+| kyber_pk | [bytes](#bytes) |  | Public key generated from Kyber |
+| dilithium_pk | [bytes](#bytes) |  | Public key generated from Dilithium |
+| fee | [uint64](#uint64) |  | Transaction fee in Shor |
+| xmss_pk | [bytes](#bytes) |  | XMSS public key |
 
 
 
@@ -905,18 +907,18 @@ Represents the reply message to get statistics about node
 <a name="qrl.NodeInfo"/>
 
 ### NodeInfo
-
+NodeInfo message definition
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| version | [string](#string) |  |  |
-| state | [NodeInfo.State](#qrl.NodeInfo.State) |  |  |
+| version | [string](#string) |  | Node version |
+| state | [NodeInfo.State](#qrl.NodeInfo.State) |  | Node state (one of UNKNOWN, UNSYNCED, SYNCING, SYNCED, FORKED) |
 | num_connections | [uint32](#uint32) |  |  |
 | num_known_peers | [uint32](#uint32) |  |  |
 | uptime | [uint64](#uint64) |  | Uptime in seconds |
-| block_height | [uint64](#uint64) |  |  |
-| block_last_hash | [bytes](#bytes) |  |  |
+| block_height | [uint64](#uint64) |  | Block height |
+| block_last_hash | [bytes](#bytes) |  | Block&#39;s last hash |
 | network_id | [string](#string) |  |  |
 
 
@@ -1026,9 +1028,9 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| error_code | [PushTransactionResp.ResponseCode](#qrl.PushTransactionResp.ResponseCode) |  |  |
-| error_description | [string](#string) |  |  |
-| tx_hash | [bytes](#bytes) |  |  |
+| error_code | [PushTransactionResp.ResponseCode](#qrl.PushTransactionResp.ResponseCode) |  | Resonse code, one of (UNKNOWN, ERROR, VALIDATION_FAILED, SUBMITTED) |
+| error_description | [string](#string) |  | Detailed description of the error |
+| tx_hash | [bytes](#bytes) |  | Transaction hash |
 
 
 
@@ -1043,11 +1045,11 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| master_addr | [bytes](#bytes) |  |  |
-| slave_pks | [bytes](#bytes) | repeated |  |
-| access_types | [uint32](#uint32) | repeated |  |
-| fee | [uint64](#uint64) |  |  |
-| xmss_pk | [bytes](#bytes) |  |  |
+| master_addr | [bytes](#bytes) |  | Transaction source address |
+| slave_pks | [bytes](#bytes) | repeated | Slave nodes Public keys |
+| access_types | [uint32](#uint32) | repeated | Slave nodes access types |
+| fee | [uint64](#uint64) |  | Transaction fee in Shor |
+| xmss_pk | [bytes](#bytes) |  | XMSS public key |
 
 
 
@@ -1156,14 +1158,14 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| master_addr | [bytes](#bytes) |  |  |
-| symbol | [bytes](#bytes) |  |  |
-| name | [bytes](#bytes) |  |  |
-| owner | [bytes](#bytes) |  |  |
-| decimals | [uint64](#uint64) |  |  |
+| master_addr | [bytes](#bytes) |  | Transaction source address |
+| symbol | [bytes](#bytes) |  | Token symbol |
+| name | [bytes](#bytes) |  | Token name |
+| owner | [bytes](#bytes) |  | Token owner |
+| decimals | [uint64](#uint64) |  | Token decimals |
 | initial_balances | [AddressAmount](#qrl.AddressAmount) | repeated |  |
-| fee | [uint64](#uint64) |  |  |
-| xmss_pk | [bytes](#bytes) |  |  |
+| fee | [uint64](#uint64) |  | Transaction fee |
+| xmss_pk | [bytes](#bytes) |  | XMSS public key |
 
 
 
@@ -1179,11 +1181,11 @@ Represents the reply message to get statistics about node
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | master_addr | [bytes](#bytes) |  |  |
-| fee | [uint64](#uint64) |  |  |
+| fee | [uint64](#uint64) |  | Transaction fee in Shor |
 | public_key | [bytes](#bytes) |  |  |
-| signature | [bytes](#bytes) |  |  |
-| nonce | [uint64](#uint64) |  |  |
-| transaction_hash | [bytes](#bytes) |  |  |
+| signature | [bytes](#bytes) |  | Dilithium signature |
+| nonce | [uint64](#uint64) |  | Transaction nonce |
+| transaction_hash | [bytes](#bytes) |  | Transaction hash |
 | transfer | [Transaction.Transfer](#qrl.Transaction.Transfer) |  |  |
 | coinbase | [Transaction.CoinBase](#qrl.Transaction.CoinBase) |  |  |
 | latticePK | [Transaction.LatticePublicKey](#qrl.Transaction.LatticePublicKey) |  |  |
@@ -1205,8 +1207,8 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| addr_to | [bytes](#bytes) |  |  |
-| amount | [uint64](#uint64) |  |  |
+| addr_to | [bytes](#bytes) |  | Transaction destination address |
+| amount | [uint64](#uint64) |  | Amount in Shor |
 
 
 
@@ -1221,8 +1223,8 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| kyber_pk | [bytes](#bytes) |  |  |
-| dilithium_pk | [bytes](#bytes) |  |  |
+| kyber_pk | [bytes](#bytes) |  | Public Key generated from Kyber |
+| dilithium_pk | [bytes](#bytes) |  | Public Key generated from Dilithium |
 
 
 
@@ -1237,7 +1239,7 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| message_hash | [bytes](#bytes) |  |  |
+| message_hash | [bytes](#bytes) |  | Hash of message to be transfered |
 
 
 
@@ -1252,8 +1254,8 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| slave_pks | [bytes](#bytes) | repeated |  |
-| access_types | [uint32](#uint32) | repeated |  |
+| slave_pks | [bytes](#bytes) | repeated | Slave nodes public keys |
+| access_types | [uint32](#uint32) | repeated | Slave node access types |
 
 
 
@@ -1268,10 +1270,10 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| symbol | [bytes](#bytes) |  |  |
-| name | [bytes](#bytes) |  |  |
-| owner | [bytes](#bytes) |  |  |
-| decimals | [uint64](#uint64) |  |  |
+| symbol | [bytes](#bytes) |  | Token symbol |
+| name | [bytes](#bytes) |  | Token name |
+| owner | [bytes](#bytes) |  | Token owner wallet address |
+| decimals | [uint64](#uint64) |  | Token decimals |
 | initial_balances | [AddressAmount](#qrl.AddressAmount) | repeated |  |
 
 
@@ -1287,8 +1289,8 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| addrs_to | [bytes](#bytes) | repeated |  |
-| amounts | [uint64](#uint64) | repeated |  |
+| addrs_to | [bytes](#bytes) | repeated | Transaction destination address |
+| amounts | [uint64](#uint64) | repeated | Amount in Shor |
 
 
 
@@ -1303,9 +1305,9 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| token_txhash | [bytes](#bytes) |  |  |
-| addrs_to | [bytes](#bytes) | repeated |  |
-| amounts | [uint64](#uint64) | repeated |  |
+| token_txhash | [bytes](#bytes) |  | Token transaction hash |
+| addrs_to | [bytes](#bytes) | repeated | Transaction destination address |
+| amounts | [uint64](#uint64) | repeated | Transaction amount |
 
 
 
@@ -1371,8 +1373,8 @@ Represents the reply message to get statistics about node
 | ----- | ---- | ----- | ----------- |
 | master_addr | [bytes](#bytes) |  | Transaction source address |
 | addresses_to | [bytes](#bytes) | repeated | Transaction destination address |
-| amounts | [uint64](#uint64) | repeated | Amount. It should be expressed in Shor |
-| fee | [uint64](#uint64) |  | Fee. It should be expressed in Shor |
+| amounts | [uint64](#uint64) | repeated | Amount in Shor |
+| fee | [uint64](#uint64) |  | Transaction fee in Shor |
 | xmss_pk | [bytes](#bytes) |  | XMSS Public key |
 
 
@@ -1403,12 +1405,12 @@ Represents the reply message to get statistics about node
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| master_addr | [bytes](#bytes) |  |  |
-| addresses_to | [bytes](#bytes) | repeated |  |
-| token_txhash | [bytes](#bytes) |  |  |
-| amounts | [uint64](#uint64) | repeated |  |
-| fee | [uint64](#uint64) |  |  |
-| xmss_pk | [bytes](#bytes) |  |  |
+| master_addr | [bytes](#bytes) |  | Transaction source address |
+| addresses_to | [bytes](#bytes) | repeated | Transaction destination address |
+| token_txhash | [bytes](#bytes) |  | Transaction hash |
+| amounts | [uint64](#uint64) | repeated | Amount in Shor |
+| fee | [uint64](#uint64) |  | Transaction fee in Shor |
+| xmss_pk | [bytes](#bytes) |  | XMSS public key |
 
 
 
@@ -1434,7 +1436,7 @@ Represents the reply message to get statistics about node
 <a name="qrl.NodeInfo.State"/>
 
 ### NodeInfo.State
-
+Node state
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -1483,7 +1485,7 @@ This service describes the Public API used by clients (wallet/cli/etc)
 | GetNodeState | [GetNodeStateReq](#qrl.GetNodeStateReq) | [GetNodeStateResp](#qrl.GetNodeStateReq) |  |
 | GetKnownPeers | [GetKnownPeersReq](#qrl.GetKnownPeersReq) | [GetKnownPeersResp](#qrl.GetKnownPeersReq) |  |
 | GetStats | [GetStatsReq](#qrl.GetStatsReq) | [GetStatsResp](#qrl.GetStatsReq) |  |
-| GetAddressState | [GetAddressStateReq](#qrl.GetAddressStateReq) | [GetAddressStateResp](#qrl.GetAddressStateReq) | Returns address state https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257 |
+| GetAddressState | [GetAddressStateReq](#qrl.GetAddressStateReq) | [GetAddressStateResp](#qrl.GetAddressStateReq) |  |
 | GetObject | [GetObjectReq](#qrl.GetObjectReq) | [GetObjectResp](#qrl.GetObjectReq) |  |
 | GetLatestData | [GetLatestDataReq](#qrl.GetLatestDataReq) | [GetLatestDataResp](#qrl.GetLatestDataReq) |  |
 | TransferCoins | [TransferCoinsReq](#qrl.TransferCoinsReq) | [TransferCoinsResp](#qrl.TransferCoinsReq) |  |

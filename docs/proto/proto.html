@@ -663,14 +663,14 @@
                   <td>address</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>QRL wallet address </p></td>
                 </tr>
               
                 <tr>
                   <td>amount</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>QRL wallet amount </p></td>
                 </tr>
               
             </tbody>
@@ -716,14 +716,14 @@
                   <td>address</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>QRL wallet address </p></td>
                 </tr>
               
                 <tr>
                   <td>balance</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>QRL wallet balance </p></td>
                 </tr>
               
                 <tr>
@@ -744,21 +744,21 @@
                   <td>transaction_hashes</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Address transaction hashes </p></td>
                 </tr>
               
                 <tr>
                   <td>tokens</td>
                   <td><a href="#qrl.AddressState.TokensEntry">AddressState.TokensEntry</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Address tokens </p></td>
                 </tr>
               
                 <tr>
                   <td>latticePK_list</td>
                   <td><a href="#qrl.LatticePK">LatticePK</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Address Lattice PKs </p></td>
                 </tr>
               
                 <tr>
@@ -855,14 +855,14 @@
                   <td>header</td>
                   <td><a href="#qrl.BlockHeader">BlockHeader</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block header </p></td>
                 </tr>
               
                 <tr>
                   <td>transactions</td>
                   <td><a href="#qrl.Transaction">Transaction</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Block transactions list </p></td>
                 </tr>
               
                 <tr>
@@ -899,14 +899,14 @@
                   <td>difficulty</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Block difficulty </p></td>
+                  <td><p>Difficulty at current block </p></td>
                 </tr>
               
                 <tr>
                   <td>timestamp</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p>Block timestamp </p></td>
+                  <td><p>Block timestamp in seconds </p></td>
                 </tr>
               
                 <tr>
@@ -927,7 +927,7 @@
                   <td>hash_power</td>
                   <td><a href="#float">float</a></td>
                   <td></td>
-                  <td><p>Hash power </p></td>
+                  <td><p>Hash power (hps) </p></td>
                 </tr>
               
                 <tr>
@@ -1008,42 +1008,44 @@
                   <td>hash_header</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>Header </p></td>
+                  <td><p>Header
+
+Block&#39;s header hash </p></td>
                 </tr>
               
                 <tr>
                   <td>block_number</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block number </p></td>
                 </tr>
               
                 <tr>
                   <td>timestamp_seconds</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block timestamp in seconds </p></td>
                 </tr>
               
                 <tr>
                   <td>hash_header_prev</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Previous block&#39;s header hash </p></td>
                 </tr>
               
                 <tr>
                   <td>reward_block</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block&#39;s reward in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>reward_fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block reward&#39;s fee in Shor </p></td>
                 </tr>
               
                 <tr>
@@ -1521,7 +1523,7 @@ Sender address </p></td>
                   <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>XMSS Public key </p></td>
                 </tr>
               
             </tbody>
@@ -1544,7 +1546,7 @@ Sender address </p></td>
                   <td>address</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>QRL wallet address </p></td>
                 </tr>
               
             </tbody>
@@ -1643,14 +1645,14 @@ Sender address </p></td>
                   <td>node_info</td>
                   <td><a href="#qrl.NodeInfo">NodeInfo</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>NodeInfo object containing node state information </p></td>
                 </tr>
               
                 <tr>
                   <td>block</td>
                   <td><a href="#qrl.Block">Block</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block of interest </p></td>
                 </tr>
               
             </tbody>
@@ -1710,7 +1712,7 @@ Sender address </p></td>
                   <td>filter</td>
                   <td><a href="#qrl.GetLatestDataReq.Filter">GetLatestDataReq.Filter</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Data filter one of (ALL, BLOCKHEADERS, TRANSACTIONS, TRANSACTIONS_UNCONFIRMED) </p></td>
                 </tr>
               
                 <tr>
@@ -1955,7 +1957,7 @@ Sender address </p></td>
                   <td>block_last_reward</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p>Block reward </p></td>
+                  <td><p>Block reward in Shor </p></td>
                 </tr>
               
                 <tr>
@@ -1969,7 +1971,7 @@ Sender address </p></td>
                   <td>block_time_sd</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p>Blocktime standrad deviation </p></td>
+                  <td><p>Blocktime standard deviation </p></td>
                 </tr>
               
                 <tr>
@@ -1990,7 +1992,7 @@ Sender address </p></td>
                   <td>block_timeseries</td>
                   <td><a href="#qrl.BlockDataPoint">BlockDataPoint</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Blocks time series of the recent blocks </p></td>
                 </tr>
               
             </tbody>
@@ -2020,21 +2022,21 @@ Sender address </p></td>
                   <td>txhash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction hash </p></td>
                 </tr>
               
                 <tr>
                   <td>dilithium_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public Key generated from Dilithium </p></td>
                 </tr>
               
                 <tr>
                   <td>kyber_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public Key generated from Kyber </p></td>
                 </tr>
               
             </tbody>
@@ -2057,35 +2059,35 @@ Sender address </p></td>
                   <td>master_addr</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction source address </p></td>
                 </tr>
               
                 <tr>
                   <td>kyber_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public key generated from Kyber </p></td>
                 </tr>
               
                 <tr>
                   <td>dilithium_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public key generated from Dilithium </p></td>
                 </tr>
               
                 <tr>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction fee in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>xmss_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>XMSS public key </p></td>
                 </tr>
               
             </tbody>
@@ -2192,7 +2194,7 @@ Sender address </p></td>
         
       
         <h3 id="qrl.NodeInfo">NodeInfo</h3>
-        <p></p>
+        <p>NodeInfo message definition</p>
 
         
           <table class="field-table">
@@ -2205,14 +2207,14 @@ Sender address </p></td>
                   <td>version</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Node version </p></td>
                 </tr>
               
                 <tr>
                   <td>state</td>
                   <td><a href="#qrl.NodeInfo.State">NodeInfo.State</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Node state (one of UNKNOWN, UNSYNCED, SYNCING, SYNCED, FORKED) </p></td>
                 </tr>
               
                 <tr>
@@ -2240,14 +2242,14 @@ Sender address </p></td>
                   <td>block_height</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block height </p></td>
                 </tr>
               
                 <tr>
                   <td>block_last_hash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Block&#39;s last hash </p></td>
                 </tr>
               
                 <tr>
@@ -2443,21 +2445,21 @@ Sender address </p></td>
                   <td>error_code</td>
                   <td><a href="#qrl.PushTransactionResp.ResponseCode">PushTransactionResp.ResponseCode</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Resonse code, one of (UNKNOWN, ERROR, VALIDATION_FAILED, SUBMITTED) </p></td>
                 </tr>
               
                 <tr>
                   <td>error_description</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Detailed description of the error </p></td>
                 </tr>
               
                 <tr>
                   <td>tx_hash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction hash </p></td>
                 </tr>
               
             </tbody>
@@ -2480,35 +2482,35 @@ Sender address </p></td>
                   <td>master_addr</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction source address </p></td>
                 </tr>
               
                 <tr>
                   <td>slave_pks</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Slave nodes Public keys </p></td>
                 </tr>
               
                 <tr>
                   <td>access_types</td>
                   <td><a href="#uint32">uint32</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Slave nodes access types </p></td>
                 </tr>
               
                 <tr>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction fee in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>xmss_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>XMSS public key </p></td>
                 </tr>
               
             </tbody>
@@ -2697,35 +2699,35 @@ Sender address </p></td>
                   <td>master_addr</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction source address </p></td>
                 </tr>
               
                 <tr>
                   <td>symbol</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token symbol </p></td>
                 </tr>
               
                 <tr>
                   <td>name</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token name </p></td>
                 </tr>
               
                 <tr>
                   <td>owner</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token owner </p></td>
                 </tr>
               
                 <tr>
                   <td>decimals</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token decimals </p></td>
                 </tr>
               
                 <tr>
@@ -2739,14 +2741,14 @@ Sender address </p></td>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction fee </p></td>
                 </tr>
               
                 <tr>
                   <td>xmss_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>XMSS public key </p></td>
                 </tr>
               
             </tbody>
@@ -2776,7 +2778,7 @@ Sender address </p></td>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction fee in Shor </p></td>
                 </tr>
               
                 <tr>
@@ -2790,21 +2792,21 @@ Sender address </p></td>
                   <td>signature</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Dilithium signature </p></td>
                 </tr>
               
                 <tr>
                   <td>nonce</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction nonce </p></td>
                 </tr>
               
                 <tr>
                   <td>transaction_hash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction hash </p></td>
                 </tr>
               
                 <tr>
@@ -2876,14 +2878,14 @@ Sender address </p></td>
                   <td>addr_to</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction destination address </p></td>
                 </tr>
               
                 <tr>
                   <td>amount</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Amount in Shor </p></td>
                 </tr>
               
             </tbody>
@@ -2906,14 +2908,14 @@ Sender address </p></td>
                   <td>kyber_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public Key generated from Kyber </p></td>
                 </tr>
               
                 <tr>
                   <td>dilithium_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Public Key generated from Dilithium </p></td>
                 </tr>
               
             </tbody>
@@ -2936,7 +2938,7 @@ Sender address </p></td>
                   <td>message_hash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Hash of message to be transfered </p></td>
                 </tr>
               
             </tbody>
@@ -2959,14 +2961,14 @@ Sender address </p></td>
                   <td>slave_pks</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Slave nodes public keys </p></td>
                 </tr>
               
                 <tr>
                   <td>access_types</td>
                   <td><a href="#uint32">uint32</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Slave node access types </p></td>
                 </tr>
               
             </tbody>
@@ -2989,28 +2991,28 @@ Sender address </p></td>
                   <td>symbol</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token symbol </p></td>
                 </tr>
               
                 <tr>
                   <td>name</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token name </p></td>
                 </tr>
               
                 <tr>
                   <td>owner</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token owner wallet address </p></td>
                 </tr>
               
                 <tr>
                   <td>decimals</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token decimals </p></td>
                 </tr>
               
                 <tr>
@@ -3040,14 +3042,14 @@ Sender address </p></td>
                   <td>addrs_to</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Transaction destination address </p></td>
                 </tr>
               
                 <tr>
                   <td>amounts</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Amount in Shor </p></td>
                 </tr>
               
             </tbody>
@@ -3070,21 +3072,21 @@ Sender address </p></td>
                   <td>token_txhash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Token transaction hash </p></td>
                 </tr>
               
                 <tr>
                   <td>addrs_to</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Transaction destination address </p></td>
                 </tr>
               
                 <tr>
                   <td>amounts</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Transaction amount </p></td>
                 </tr>
               
             </tbody>
@@ -3218,14 +3220,14 @@ Sender address </p></td>
                   <td>amounts</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td>repeated</td>
-                  <td><p>Amount. It should be expressed in Shor </p></td>
+                  <td><p>Amount in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p>Fee. It should be expressed in Shor </p></td>
+                  <td><p>Transaction fee in Shor </p></td>
                 </tr>
               
                 <tr>
@@ -3278,42 +3280,42 @@ Sender address </p></td>
                   <td>master_addr</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction source address </p></td>
                 </tr>
               
                 <tr>
                   <td>addresses_to</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Transaction destination address </p></td>
                 </tr>
               
                 <tr>
                   <td>token_txhash</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction hash </p></td>
                 </tr>
               
                 <tr>
                   <td>amounts</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Amount in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>fee</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Transaction fee in Shor </p></td>
                 </tr>
               
                 <tr>
                   <td>xmss_pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>XMSS public key </p></td>
                 </tr>
               
             </tbody>
@@ -3360,7 +3362,7 @@ Sender address </p></td>
         </table>
       
         <h3 id="qrl.NodeInfo.State">NodeInfo.State</h3>
-        <p></p>
+        <p>Node state</p>
         <table class="enum-table">
           <thead>
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -3483,8 +3485,7 @@ Sender address </p></td>
                 <td>GetAddressState</td>
                 <td><a href="#qrl.GetAddressStateReq">GetAddressStateReq</a></td>
                 <td><a href="#qrl.GetAddressStateResp">GetAddressStateResp</a></td>
-                <td><p>Returns address state
-https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257</p></td>
+                <td><p></p></td>
               </tr>
             
               <tr>

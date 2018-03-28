@@ -21,10 +21,6 @@ service PublicAPI
 
     rpc GetStats (GetStatsReq) returns (GetStatsResp);
 
-    /**
-     * Returns address state
-     * https://github.com/ademcan/integration_tests/blob/9bab1e98ab4307c09f05092a38068f4562a98f88/tests/js/test.js#L257
-    */
     rpc GetAddressState (GetAddressStateReq) returns (GetAddressStateResp);
     rpc GetObject(GetObjectReq) returns (GetObjectResp);
 
@@ -107,8 +103,8 @@ message GetBlockReq {
  * NOT USED -> RM?
 */
 message GetBlockResp {
-    NodeInfo node_info = 1;
-    Block block = 2;
+    NodeInfo node_info = 1;             // NodeInfo object containing node state information
+    Block block = 2;                    // Block of interest
 }
 
 /**
@@ -126,22 +122,22 @@ message GetStatsResp {
     uint64 epoch = 2;                       // Current epoch
     uint64 uptime_network = 3;              // Indicates uptime in seconds
 
-    uint64 block_last_reward = 4;           // Block reward
+    uint64 block_last_reward = 4;           // Block reward in Shor
     uint64 block_time_mean = 5;             // Blocktime average
-    uint64 block_time_sd = 6;               // Blocktime standrad deviation
+    uint64 block_time_sd = 6;               // Blocktime standard deviation
 
     uint64 coins_total_supply = 7;          // Total coins supply
     uint64 coins_emitted = 8;               // Total coins emitted
 
-    repeated BlockDataPoint block_timeseries = 9;
+    repeated BlockDataPoint block_timeseries = 9;   // Blocks time series of the recent blocks
 }
 
 message GetAddressFromPKReq {
-    bytes pk = 1;
+    bytes pk = 1;           // XMSS Public key
 }
 
 message GetAddressFromPKResp {
-    bytes address = 1;
+    bytes address = 1;      // QRL wallet address
 }
 
 /**
@@ -150,11 +146,11 @@ message GetAddressFromPKResp {
 message BlockDataPoint
 {
     uint64 number = 1;                      // Block number
-    string difficulty = 2;                  // Block difficulty
-    uint64 timestamp = 3;                   // Block timestamp
+    string difficulty = 2;                  // Difficulty at current block
+    uint64 timestamp = 3;                   // Block timestamp in seconds
     uint64 time_last = 4;
     uint64 time_movavg = 5;
-    float hash_power = 6;                   // Hash power
+    float hash_power = 6;                   // Hash power (hps)
 
     bytes header_hash = 7;                  // Block header hash
     bytes header_hash_prev = 8;             // Previous block's header hash
@@ -182,7 +178,7 @@ message GetLatestDataReq {
         TRANSACTIONS = 2;
         TRANSACTIONS_UNCONFIRMED = 3;
     }
-    Filter filter = 1;
+    Filter filter = 1;                      // Data filter one of (ALL, BLOCKHEADERS, TRANSACTIONS, TRANSACTIONS_UNCONFIRMED)
     uint32 offset = 2;                      // Offset in the result list (works backwards in this case)
     uint32 quantity = 3;                    // Number of items to retrive. Capped at 100
 }
@@ -195,10 +191,10 @@ message GetLatestDataResp {
 
 message TransferCoinsReq {
     bytes master_addr = 1;                 // Transaction source address
-    repeated bytes addresses_to = 2;                   // Transaction destination address
-    repeated uint64 amounts = 3;                      // Amount. It should be expressed in Shor
-    uint64 fee = 4;                         // Fee. It should be expressed in Shor
-    bytes xmss_pk = 5;                      // XMSS Public key
+    repeated bytes addresses_to = 2;       // Transaction destination address
+    repeated uint64 amounts = 3;           // Amount in Shor
+    uint64 fee = 4;                        // Transaction fee in Shor
+    bytes xmss_pk = 5;                     // XMSS Public key
 }
 
 message TransferCoinsResp {
@@ -214,45 +210,45 @@ message PushTransactionResp {
         SUBMITTED = 3;
     }
 
-    ResponseCode error_code = 1;
-    string error_description = 2;
-    bytes tx_hash = 3;
+    ResponseCode error_code = 1;        // Resonse code, one of (UNKNOWN, ERROR, VALIDATION_FAILED, SUBMITTED)
+    string error_description = 2;       // Detailed description of the error
+    bytes tx_hash = 3;                  // Transaction hash
 }
 
 message TokenTxnReq {
-    bytes master_addr = 1;
-    bytes symbol = 2;
-    bytes name = 3;
-    bytes owner = 4;
-    uint64 decimals = 5;
+    bytes master_addr = 1;              // Transaction source address
+    bytes symbol = 2;                   // Token symbol
+    bytes name = 3;                     // Token name
+    bytes owner = 4;                    // Token owner
+    uint64 decimals = 5;                // Token decimals
     repeated AddressAmount initial_balances = 6;
-    uint64 fee = 7;
-    bytes xmss_pk = 8;
+    uint64 fee = 7;                     // Transaction fee
+    bytes xmss_pk = 8;                  // XMSS public key
 }
 
 message TransferTokenTxnReq {
-    bytes master_addr = 1;
-    repeated bytes addresses_to = 2;
-    bytes token_txhash = 3;
-    repeated uint64 amounts = 4;
-    uint64 fee = 5;
-    bytes xmss_pk = 6;
+    bytes master_addr = 1;              // Transaction source address
+    repeated bytes addresses_to = 2;    // Transaction destination address
+    bytes token_txhash = 3;             // Transaction hash
+    repeated uint64 amounts = 4;        // Amount in Shor
+    uint64 fee = 5;                     // Transaction fee in Shor
+    bytes xmss_pk = 6;                  // XMSS public key
 }
 
 message SlaveTxnReq {
-    bytes master_addr = 1;
-    repeated bytes slave_pks = 2;
-    repeated uint32 access_types = 3;
-    uint64 fee = 4;
-    bytes xmss_pk = 5;
+    bytes master_addr = 1;              // Transaction source address
+    repeated bytes slave_pks = 2;       // Slave nodes Public keys
+    repeated uint32 access_types = 3;   // Slave nodes access types
+    uint64 fee = 4;                     // Transaction fee in Shor
+    bytes xmss_pk = 5;                  // XMSS public key
 }
 
 message LatticePublicKeyTxnReq {
-    bytes master_addr = 1;
-    bytes kyber_pk = 2;
-    bytes dilithium_pk = 3;
-    uint64 fee = 4;
-    bytes xmss_pk = 5;
+    bytes master_addr = 1;              // Transaction source address
+    bytes kyber_pk = 2;                 // Public key generated from Kyber
+    bytes dilithium_pk = 3;             // Public key generated from Dilithium
+    uint64 fee = 4;                     // Transaction fee in Shor
+    bytes xmss_pk = 5;                  // XMSS public key
 }
 
 ////////////////////////////
@@ -277,8 +273,14 @@ message GetLocalAddressesResp
 ////////////////////////////
 ////////////////////////////
 
+/**
+ * NodeInfo message definition
+*/
 message NodeInfo
 {
+    /**
+     * Node state
+    */
     enum State {
         UNKNOWN = 0;
         UNSYNCED = 1;
@@ -287,13 +289,13 @@ message NodeInfo
         FORKED = 4;
     }
 
-    string version = 1;
-    State  state = 2;
+    string version = 1;             // Node version
+    State  state = 2;               // Node state (one of UNKNOWN, UNSYNCED, SYNCING, SYNCED, FORKED)
     uint32 num_connections = 3;
     uint32 num_known_peers = 4;
-    uint64 uptime = 5;               // Uptime in seconds
-    uint64 block_height = 6;
-    bytes  block_last_hash = 7;
+    uint64 uptime = 5;              // Uptime in seconds
+    uint64 block_height = 6;        // Block height
+    bytes  block_last_hash = 7;     // Block's last hash
     string network_id = 8;
 }
 
@@ -306,37 +308,37 @@ message Peer {
 }
 
 message AddressState {
-    bytes address = 1;
-    uint64 balance = 2;
+    bytes address = 1;                          // QRL wallet address
+    uint64 balance = 2;                         // QRL wallet balance
     uint64 nonce = 3;                           // FIXME: Discuss. 32 or 64 bits?
     repeated bytes ots_bitfield = 4;
-    repeated bytes transaction_hashes = 5;
-    map<string, uint64> tokens = 6;
-    repeated LatticePK latticePK_list = 7;
+    repeated bytes transaction_hashes = 5;      // Address transaction hashes
+    map<string, uint64> tokens = 6;             // Address tokens
+    repeated LatticePK latticePK_list = 7;      // Address Lattice PKs
     map<string, uint32> slave_pks_access_type = 8;
     uint64 ots_counter = 9;
 }
 
 message LatticePK {
-    bytes txhash = 1;
-    bytes dilithium_pk = 2;
-    bytes kyber_pk = 3;
+    bytes txhash = 1;               // Transaction hash
+    bytes dilithium_pk = 2;         // Public Key generated from Dilithium
+    bytes kyber_pk = 3;             // Public Key generated from Kyber
 }
 
 message AddressAmount {
-    bytes address = 1;
-    uint64 amount = 2;
+    bytes address = 1;              // QRL wallet address
+    uint64 amount = 2;              // QRL wallet amount
 }
 
 message BlockHeader {
     // Header
-    bytes hash_header = 1;
+    bytes hash_header = 1;          // Block's header hash
 
-    uint64 block_number = 2;
-    uint64 timestamp_seconds = 3;
-    bytes hash_header_prev = 4;
-    uint64 reward_block = 5;
-    uint64 reward_fee = 6;
+    uint64 block_number = 2;        // Block number
+    uint64 timestamp_seconds = 3;   // Block timestamp in seconds
+    bytes hash_header_prev = 4;     // Previous block's header hash
+    uint64 reward_block = 5;        // Block's reward in Shor
+    uint64 reward_fee = 6;          // Block reward's fee in Shor
     bytes merkle_root = 7;
 
     uint64 mining_nonce = 8;
@@ -369,8 +371,8 @@ message BlockExtended {
 }
 
 message Block {
-    BlockHeader header = 1;
-    repeated Transaction transactions = 2;
+    BlockHeader header = 1;                 // Block header
+    repeated Transaction transactions = 2;  // Block transactions list
 
     // This is only applicable to genesis blocks
     repeated GenesisBalance genesis_balance = 3;
@@ -388,11 +390,11 @@ message BlockMetaDataList {
 
 message Transaction {
     bytes master_addr = 1;
-    uint64 fee = 2;
-    bytes public_key = 3;
-    bytes signature = 4;
-    uint64 nonce = 5;
-    bytes transaction_hash = 6;
+    uint64 fee = 2;                 // Transaction fee in Shor
+    bytes public_key = 3;           //
+    bytes signature = 4;            // Dilithium signature
+    uint64 nonce = 5;               // Transaction nonce
+    bytes transaction_hash = 6;     // Transaction hash
 
     oneof transactionType {
         Transfer transfer = 7;
@@ -406,41 +408,41 @@ message Transaction {
 
     //////////
     message Transfer {
-        repeated bytes addrs_to = 1;
-        repeated uint64 amounts = 2;
+        repeated bytes addrs_to = 1;        // Transaction destination address
+        repeated uint64 amounts = 2;        // Amount in Shor
     }
 
     message CoinBase {
-        bytes addr_to = 1;
-        uint64 amount = 2;
+        bytes addr_to = 1;                  // Transaction destination address
+        uint64 amount = 2;                  // Amount in Shor
     }
 
     message LatticePublicKey {
-        bytes kyber_pk = 1;
-        bytes dilithium_pk = 2;
+        bytes kyber_pk = 1;                 // Public Key generated from Kyber
+        bytes dilithium_pk = 2;             // Public Key generated from Dilithium
     }
 
     message Message {
-        bytes message_hash = 1;
+        bytes message_hash = 1;             // Hash of message to be transfered
     }
 
     message Token {
-        bytes symbol = 1;
-        bytes name = 2;
-        bytes owner = 3;
-        uint64 decimals = 4;
+        bytes symbol = 1;                   // Token symbol
+        bytes name = 2;                     // Token name
+        bytes owner = 3;                    // Token owner wallet address
+        uint64 decimals = 4;                // Token decimals
         repeated AddressAmount initial_balances = 5;
     }
 
     message TransferToken {
-        bytes token_txhash = 1;
-        repeated bytes addrs_to = 2;
-        repeated uint64 amounts = 3;
+        bytes token_txhash = 1;             // Token transaction hash
+        repeated bytes addrs_to = 2;        // Transaction destination address
+        repeated uint64 amounts = 3;        // Transaction amount
     }
 
     message Slave {
-        repeated bytes slave_pks = 1;
-        repeated uint32 access_types = 2;
+        repeated bytes slave_pks = 1;       // Slave nodes public keys
+        repeated uint32 access_types = 2;   // Slave node access types
     }
 }
 
