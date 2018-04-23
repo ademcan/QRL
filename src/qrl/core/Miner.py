@@ -4,7 +4,7 @@
 import copy
 from typing import Optional
 
-from pyqrllib.pyqrllib import bin2hstr
+from pyqrllib.pyqrllib import bin2hstr, hstr2bin
 from pyqryptonight.pyqryptonight import Qryptominer, StringToUInt256, UInt256ToString
 
 from qrl.core import config
@@ -20,7 +20,7 @@ from qrl.core.misc import logger
 class Miner(Qryptominer):
     def __init__(self,
                  pre_block_logic,
-                 mining_credit_wallet: bytes,
+                 mining_address: bytes,
                  state: State,
                  mining_thread_count,
                  add_unprocessed_txn_fn):
@@ -32,20 +32,20 @@ class Miner(Qryptominer):
         self._current_target = None
         self._measurement = None  # Required only for logging
 
-        self._mining_credit_wallet = mining_credit_wallet
+        self._mining_address = mining_address
         self._reward_address = None
         self.state = state
         self._add_unprocessed_txn_fn = add_unprocessed_txn_fn
         self._mining_thread_count = mining_thread_count
         self._dummy_xmss = None
 
-    def prepare_next_unmined_block_template(self, tx_pool, parent_block: Block, parent_difficulty):
+    def prepare_next_unmined_block_template(self, mining_address, tx_pool, parent_block: Block, parent_difficulty):
         try:
             self.cancel()
             self._mining_block = self.create_block(last_block=parent_block,
                                                    mining_nonce=0,
                                                    tx_pool=tx_pool,
-                                                   miner_address=self._mining_credit_wallet)
+                                                   miner_address=mining_address)
 
             parent_metadata = self.state.get_block_metadata(parent_block.headerhash)
             self._measurement = self.state.get_measurement(self._mining_block.timestamp,
@@ -102,9 +102,6 @@ class Miner(Qryptominer):
                      mining_nonce,
                      tx_pool: TransactionPool,
                      miner_address) -> Optional[Block]:
-        # TODO: Persistence will move to rocksdb
-        # FIXME: Difference between this and create block?????????????
-
         dummy_block = Block.create(block_number=last_block.block_number + 1,
                                    prevblock_headerhash=last_block.headerhash,
                                    transactions=[],
@@ -115,19 +112,19 @@ class Miner(Qryptominer):
 
         addresses_set = set()
         for tx_set in t_pool2:
-            tx = tx_set[1]
-            tx.set_effected_address(addresses_set)
+            tx = tx_set[1].transaction
+            tx.set_affected_address(addresses_set)
 
         addresses_state = dict()
         for address in addresses_set:
-            addresses_state[address] = self.state.get_address(address)
+            addresses_state[address] = self.state.get_address_state(address)
 
         block_size = dummy_block.size
         block_size_limit = self.state.get_block_size_limit(last_block)
 
         transactions = []
         for tx_set in t_pool2:
-            tx = tx_set[1]
+            tx = tx_set[1].transaction
             # Skip Transactions for later, which doesn't fit into block
             if block_size + tx.size + config.dev.tx_extra_overhead > block_size_limit:
                 continue
@@ -142,7 +139,7 @@ class Miner(Qryptominer):
                 tx_pool.remove_tx_from_pool(tx)
                 continue
 
-            tx.apply_on_state(addresses_state)
+            tx.apply_state_changes(addresses_state)
 
             tx._data.nonce = addr_from_pk_state.nonce
             block_size += tx.size + config.dev.tx_extra_overhead
@@ -155,10 +152,17 @@ class Miner(Qryptominer):
 
         return block
 
-    def get_block_to_mine(self, wallet_address) -> list:
-        # TODO: use wallet_address to track the share
-        if not self._mining_block:
-            return []
+    def get_block_to_mine(self, wallet_address, tx_pool, last_block, last_block_difficulty) -> list:
+        mining_address = bytes(hstr2bin(wallet_address[1:].decode()))
+        if self._mining_block:
+            if last_block.headerhash == self._mining_block.prev_headerhash:
+                if self._mining_block.transactions[0].coinbase.addr_to == mining_address:
+                    return [bin2hstr(self._mining_block.mining_blob),
+                            int(bin2hstr(self._current_difficulty), 16)]
+                else:
+                    self._mining_block.update_mining_address(mining_address)  # Updates only Miner Address
+
+        self.prepare_next_unmined_block_template(mining_address, tx_pool, last_block, last_block_difficulty)
 
         return [bin2hstr(self._mining_block.mining_blob),
                 int(bin2hstr(self._current_difficulty), 16)]

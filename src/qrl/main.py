@@ -3,7 +3,9 @@
 # file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 import argparse
 import logging
+from os.path import expanduser
 
+from mock import MagicMock
 from twisted.internet import reactor
 from pyqrllib.pyqrllib import hstr2bin
 
@@ -34,18 +36,20 @@ class ContextFilter(logging.Filter):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='QRL node')
-    parser.add_argument('--mining_thread_count', '-m', dest='mining_thread_count', action='store_true', required=False,
+    parser.add_argument('--mining_thread_count', '-m', dest='mining_thread_count', type=int, required=False,
                         default=config.user.mining_thread_count, help="Number of threads for mining")
     parser.add_argument('--quiet', '-q', dest='quiet', action='store_true', required=False, default=False,
                         help="Avoid writing data to the console")
-    parser.add_argument('--datadir', '-d', dest='data_dir', default=config.user.data_dir,
-                        help="Retrieve data from a different path")
+    parser.add_argument('--qrldir', '-d', dest='qrl_dir', default=config.user.qrl_dir,
+                        help="Use a different directory for node data/configuration")
     parser.add_argument('--no-colors', dest='no_colors', action='store_true', default=False,
                         help="Disables color output")
     parser.add_argument("-l", "--loglevel", dest="logLevel", choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help="Set the logging level")
-    parser.add_argument('--miningCreditWallet', dest='mining_credit_wallet', required=True,
+    parser.add_argument('--miningAddress', dest='mining_address', required=False,
                         help="QRL Wallet address on which mining reward has to be credited.")
+    parser.add_argument('--mockGetMeasurement', dest='measurement', required=False, type=int, default=-1,
+                        help="Warning: Only for integration test, to mock get_measurement")
     return parser.parse_args()
 
 
@@ -64,13 +68,16 @@ def set_logger(args, sync_state):
     logger_twisted.enable_twisted_log_observer()
 
 
-def get_mining_credit_wallet(mining_credit_wallet: str):
+def get_mining_address(mining_address: str):
     try:
-        mining_credit_wallet = bytes(hstr2bin(mining_credit_wallet[1:]))
-        if AddressState.address_is_valid(mining_credit_wallet):
-            return mining_credit_wallet
+        if not mining_address:
+            return bytes(hstr2bin(config.user.mining_address[1:]))
+
+        mining_address = bytes(hstr2bin(mining_address[1:]))
+        if AddressState.address_is_valid(mining_address):
+            return mining_address
     except Exception:
-        logger.info('Exception in validate_mining_credit_wallet')
+        logger.info('Exception in validate_mining_address')
 
     return None
 
@@ -78,28 +85,34 @@ def get_mining_credit_wallet(mining_credit_wallet: str):
 def main():
     args = parse_arguments()
 
-    config.create_path(config.user.wallet_dir)
-    mining_credit_wallet = get_mining_credit_wallet(args.mining_credit_wallet)
-
-    if not mining_credit_wallet:
-        logger.warning('Invalid Mining Credit Wallet Address')
-        logger.warning('%s', args.mining_credit_wallet)
-        return False
-
     logger.debug("=====================================================================================")
-    logger.info("Data Path: %s", args.data_dir)
+    logger.info("QRL Path: %s", args.qrl_dir)
+    config.user.qrl_dir = expanduser(args.qrl_dir)
+    config.create_path(config.user.qrl_dir)
+    logger.debug("=====================================================================================")
 
-    config.user.data_dir = args.data_dir
-    config.create_path(config.user.data_dir)
+    config.create_path(config.user.wallet_dir)
+    mining_address = None
+    if config.user.mining_enabled:
+        mining_address = get_mining_address(args.mining_address)
+
+        if not mining_address:
+            logger.warning('Invalid Mining Credit Wallet Address')
+            logger.warning('%s', args.mining_address)
+            return False
 
     ntp.setDrift()
 
     logger.info('Initializing chain..')
     persistent_state = State()
+
+    if args.measurement > -1:
+        persistent_state.get_measurement = MagicMock(return_value=args.measurement)
+
     chain_manager = ChainManager(state=persistent_state)
     chain_manager.load(Block.from_json(GenesisBlock().to_json()))
 
-    qrlnode = QRLNode(db_state=persistent_state, mining_credit_wallet=mining_credit_wallet)
+    qrlnode = QRLNode(db_state=persistent_state, mining_address=mining_address)
     qrlnode.set_chain_manager(chain_manager)
 
     set_logger(args, qrlnode.sync_state)
@@ -114,7 +127,7 @@ def main():
     qrlnode.start_pow(args.mining_thread_count)
 
     logger.info('QRL blockchain ledger %s', config.dev.version)
-    logger.info('mining/staking address %s', args.mining_credit_wallet)
+    logger.info('mining/staking address %s', args.mining_address)
 
     # FIXME: This will be removed once we move away from Twisted
     reactor.run()

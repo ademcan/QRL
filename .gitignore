@@ -57,3 +57,7 @@ venv/
 \.idea/misc\.xml
 \.idea/vcs\.xml
 \.idea/libraries/R_User_Library\.xml
+
+\.idea/QRL\.iml
+
+\.idea/dictionaries/

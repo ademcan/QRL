@@ -32,7 +32,7 @@ class POW(ConsensusMechanism):
                  p2p_factory,
                  sync_state: SyncState,
                  time_provider,
-                 mining_credit_wallet: bytes,
+                 mining_address: bytes,
                  mining_thread_count):
 
         super().__init__(chain_manager)
@@ -40,13 +40,13 @@ class POW(ConsensusMechanism):
         self.time_provider = time_provider
 
         self.miner_toggler = False
-        self.mining_credit_wallet = mining_credit_wallet
+        self.mining_address = mining_address
 
         self.p2p_factory = p2p_factory  # FIXME: Decouple from p2pFactory. Comms vs node logic
         self.p2p_factory.pow = self  # FIXME: Temporary hack to keep things working while refactoring
 
         self.miner = Miner(self.pre_block_logic,
-                           self.mining_credit_wallet,
+                           self.mining_address,
                            self.chain_manager.state,
                            mining_thread_count,
                            self.p2p_factory.add_unprocessed_txn)
@@ -58,6 +58,7 @@ class POW(ConsensusMechanism):
         self.last_pow_cycle = 0
         self.last_bk_time = 0
         self.last_pb_time = 0
+        self.suspend_mining_timestamp = 0
 
         self.epoch_diff = None
 
@@ -225,9 +226,13 @@ class POW(ConsensusMechanism):
         return False
 
     def mine_next(self, parent_block):
-        parent_metadata = self.chain_manager.state.get_block_metadata(parent_block.headerhash)
-        self.miner.prepare_next_unmined_block_template(self.chain_manager.tx_pool, parent_block, parent_metadata.block_difficulty)
-
+        if ntp.getTime() < self.suspend_mining_timestamp:
+            return
         if config.user.mining_enabled:
+            parent_metadata = self.chain_manager.state.get_block_metadata(parent_block.headerhash)
+            self.miner.prepare_next_unmined_block_template(mining_address=self.mining_address,
+                                                           tx_pool=self.chain_manager.tx_pool,
+                                                           parent_block=parent_block,
+                                                           parent_difficulty=parent_metadata.block_difficulty)
             logger.info('Mining Block #%s', parent_block.block_number + 1)
             self.miner.start_mining(parent_block, parent_metadata.block_difficulty)

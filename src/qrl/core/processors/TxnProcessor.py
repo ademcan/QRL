@@ -32,12 +32,12 @@ class TxnProcessor:
         if not tx.validate():
             return False
 
-        addr_from_state = self.state.get_address(address=tx.addr_from)
+        addr_from_state = self.state.get_address_state(address=tx.addr_from)
         addr_from_pk_state = addr_from_state
 
         addr_from_pk = Transaction.get_slave(tx)
         if addr_from_pk:
-            addr_from_pk_state = self.state.get_address(address=addr_from_pk)
+            addr_from_pk_state = self.state.get_address_state(address=addr_from_pk)
 
         is_valid_state = tx.validate_extended(addr_from_state=addr_from_state,
                                               addr_from_pk_state=addr_from_pk_state)
@@ -45,12 +45,11 @@ class TxnProcessor:
         is_valid_pool_state = tx.validate_transaction_pool(self.transaction_pool_obj.transaction_pool)
 
         if not (is_valid_state and is_valid_pool_state):
-            logger.info('>>>TX %s failed state_validate', tx.txhash)
+            logger.info('>>>TX %s failed state_validate', bin2hstr(tx.txhash))
             return False
 
         logger.info('A TXN has been Processed %s', bin2hstr(tx.txhash))
-        self.transaction_pool_obj.add_tx_to_pool(tx)
-        self.transaction_pool_obj.append_addr_ots_hash(tx)
+        self.transaction_pool_obj.add_tx_to_pool(tx, self.state.last_block.block_number)
         self.broadcast_tx(tx)
 
         return True

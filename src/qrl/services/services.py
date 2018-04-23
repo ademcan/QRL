@@ -18,28 +18,35 @@ from qrl.services.MiningAPIService import MiningAPIService
 
 
 def start_services(node: QRLNode):
-    public_server = grpc.server(ThreadPoolExecutor(max_workers=1),
-                                maximum_concurrent_rpcs=config.user.max_peers_limit)
+    public_server = grpc.server(ThreadPoolExecutor(max_workers=config.user.public_api_threads),
+                                maximum_concurrent_rpcs=config.user.public_api_max_concurrent_rpc)
     add_BaseServicer_to_server(BaseService(node), public_server)
     add_PublicAPIServicer_to_server(PublicAPIService(node), public_server)
 
-    public_server.add_insecure_port("[::]:9009")
-    public_server.start()
+    if config.user.public_api_enabled:
+        public_server.add_insecure_port("{0}:{1}".format(config.user.public_api_host,
+                                                         config.user.public_api_port))
+        public_server.start()
 
     logger.info("grpc public service - started !")
 
-    admin_server = grpc.server(ThreadPoolExecutor(max_workers=1),
-                               maximum_concurrent_rpcs=config.user.max_peers_limit)
+    admin_server = grpc.server(ThreadPoolExecutor(max_workers=config.user.admin_api_threads),
+                               maximum_concurrent_rpcs=config.user.admin_api_max_concurrent_rpc)
     add_AdminAPIServicer_to_server(AdminAPIService(node), admin_server)
 
-    admin_server.add_insecure_port("127.0.0.1:9008")
-    admin_server.start()
+    if config.user.admin_api_enabled:
+        admin_server.add_insecure_port("{0}:{1}".format(config.user.admin_api_host,
+                                                        config.user.admin_api_port))
+        admin_server.start()
 
-    mining_server = grpc.server(ThreadPoolExecutor(max_workers=1),
-                                maximum_concurrent_rpcs=config.user.max_peers_limit)
+    mining_server = grpc.server(ThreadPoolExecutor(max_workers=config.user.mining_api_threads),
+                                maximum_concurrent_rpcs=config.user.mining_api_max_concurrent_rpc)
     add_MiningAPIServicer_to_server(MiningAPIService(node), mining_server)
-    mining_server.add_insecure_port("[::]:9007")
-    mining_server.start()
+
+    if config.user.mining_api_enabled:
+        mining_server.add_insecure_port("{0}:{1}".format(config.user.mining_api_host,
+                                                         config.user.mining_api_port))
+        mining_server.start()
 
     logger.info("grpc admin service - started !")
 

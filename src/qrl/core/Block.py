@@ -7,7 +7,7 @@ from qrl.core import config
 from qrl.core.misc import logger
 from qrl.core.Transaction import CoinBase, Transaction
 from qrl.core.BlockHeader import BlockHeader
-from qrl.crypto.misc import sha256, merkle_tx_hash
+from qrl.crypto.misc import merkle_tx_hash
 from qrl.generated import qrl_pb2
 
 
@@ -91,6 +91,7 @@ class Block(object):
 
     def set_nonces(self, mining_nonce, extra_nonce=0):
         self.blockheader.set_nonces(mining_nonce, extra_nonce)
+        self._data.header.MergeFrom(self.blockheader.pbdata)
 
     def to_json(self)->str:
         # FIXME: Remove once we move completely to protobuf
@@ -121,9 +122,6 @@ class Block(object):
             hashedtransactions.append(tx.txhash)
             block._data.transactions.extend([tx.pbdata])  # copy memory rather than sym link
 
-        if not hashedtransactions:
-            hashedtransactions = [sha256(b'')]
-
         txs_hash = merkle_tx_hash(hashedtransactions)           # FIXME: Find a better name, type changes
 
         tmp_blockheader = BlockHeader.create(blocknumber=block_number,
@@ -131,11 +129,25 @@ class Block(object):
                                              hashedtransactions=txs_hash,
                                              fee_reward=fee_reward)
 
+        block.blockheader = tmp_blockheader
+
         block._data.header.MergeFrom(tmp_blockheader.pbdata)
 
         block.set_nonces(0, 0)
 
         return block
+
+    def update_mining_address(self, mining_address: bytes):
+        coinbase_tx = Transaction.from_pbdata(self.transactions[0])
+        coinbase_tx.update_mining_address(mining_address)
+        hashedtransactions = [coinbase_tx.txhash]
+
+        for tx in self.transactions:
+            hashedtransactions.append(tx.transaction_hash)
+
+        self.blockheader.update_merkle_root(merkle_tx_hash(hashedtransactions))
+
+        self._data.header.MergeFrom(self.blockheader.pbdata)
 
     def validate(self) -> bool:
         fee_reward = 0
@@ -156,7 +168,3 @@ class Block(object):
 
     def validate_parent_child_relation(self, parent_block) -> bool:
         return self.blockheader.validate_parent_child_relation(parent_block)
-
-    def add_transaction(self, tx: Transaction):
-        # TODO: Verify something basic here?
-        self._data.transactions.extend(tx.pbdata)

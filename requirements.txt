@@ -1,5 +1,5 @@
 # Fixing sphinx version due to https://github.com/sphinx-doc/sphinx/issues/3976
-setuptools>=28.0.0
+setuptools>=39.0.0
 leveldb==0.20
 ntplib>=0.3.3
 Twisted>=17.5.0
@@ -14,7 +14,8 @@ pyopenssl>=17.3.0
 six>=1.9
 click==6.7
 pyqrllib>=0.8.21,<0.9.0
-pyqryptonight
+pyqryptonight>=0.9.0,<0.10.0
 Flask==0.12.2
 json-rpc==1.10.8
 cryptography
+mock>=2.0.0

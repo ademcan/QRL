@@ -152,7 +152,7 @@ def getblockheaderbyheight(height):
 
 
 @api.dispatcher.add_method
-def getblocktemplate(wallet_address):
+def getblocktemplate(reserve_size, wallet_address):
     stub = get_mining_stub()
     request = qrlmining_pb2.GetBlockToMineReq(wallet_address=wallet_address.encode())
     grpc_response = stub.GetBlockToMine(request=request, timeout=10)
@@ -188,7 +188,7 @@ def getblockminingcompatible(height):
 @api.dispatcher.add_method
 def transfer(destinations, fee, mixin, unlock_time):
     if len(destinations) > config.dev.transaction_multi_output_limit:
-        return None
+        raise Exception('Payment Failed: Amount exceeds the allowed limit')
 
     addrs_to = []
     amounts = []
@@ -201,7 +201,7 @@ def transfer(destinations, fee, mixin, unlock_time):
 
     xmss = get_unused_payment_xmss(stub)
     if not xmss:
-        return None
+        raise Exception('Payment Failed: No Unused Payment XMSS found')
 
     tx = TransferTransaction.create(addrs_to=addrs_to,
                                     amounts=amounts,
@@ -214,7 +214,7 @@ def transfer(destinations, fee, mixin, unlock_time):
     response = stub.PushTransaction(request=qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata))
 
     if response.error_code != 3:
-        return None
+        raise Exception('Transaction Submission Failed, Response Code: %s', response.error_code)
 
     response = {'tx_hash': bin2hstr(tx.txhash)}
 
@@ -223,11 +223,18 @@ def transfer(destinations, fee, mixin, unlock_time):
 
 app.add_url_rule('/json_rpc', 'api', api.as_view(), methods=['POST'])
 
-if __name__ == '__main__':
-    global payment_slaves
-    global payment_xmss
-    mining_stub = qrlmining_pb2_grpc.MiningAPIStub(grpc.insecure_channel('127.0.0.1:9007'))
-    public_stub = qrl_pb2_grpc.PublicAPIStub(grpc.insecure_channel('127.0.0.1:9009'))
+
+def main():
+    global payment_slaves, payment_xmss
+    global mining_stub, public_stub
+    mining_stub = qrlmining_pb2_grpc.MiningAPIStub(grpc.insecure_channel('{0}:{1}'.format(config.user.mining_api_host,
+                                                                                          config.user.mining_api_port)))
+    public_stub = qrl_pb2_grpc.PublicAPIStub(grpc.insecure_channel('{0}:{1}'.format(config.user.public_api_host,
+                                                                                    config.user.public_api_port)))
     payment_xmss = None
     payment_slaves = read_slaves(config.user.mining_pool_payment_wallet_path)
-    app.run(host='127.0.0.1', port=18081)
+    app.run(host=config.user.grpc_proxy_host, port=config.user.grpc_proxy_port)
+
+
+if __name__ == '__main__':
+    main()

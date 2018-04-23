@@ -42,7 +42,7 @@ class TestNode(TestCase):
                    p2p_factory=p2p_factory,
                    sync_state=sync_state,
                    time_provider=time_provider,
-                   mining_credit_wallet=get_random_xmss().address,
+                   mining_address=get_random_xmss().address,
                    mining_thread_count=0)
 
         self.assertIsNotNone(node)
@@ -57,7 +57,7 @@ class TestNode(TestCase):
                    p2p_factory=p2p_factory,
                    sync_state=sync_state,
                    time_provider=time_provider,
-                   mining_credit_wallet=get_random_xmss().address,
+                   mining_address=get_random_xmss().address,
                    mining_thread_count=0)
 
         self.assertIsNotNone(node)
@@ -74,7 +74,7 @@ class TestNode(TestCase):
                    p2p_factory=p2p_factory,
                    sync_state=sync_state,
                    time_provider=time_provider,
-                   mining_credit_wallet=get_random_xmss().address,
+                   mining_address=get_random_xmss().address,
                    mining_thread_count=0)
 
         self.assertIsNotNone(node)
@@ -95,7 +95,7 @@ class TestNode(TestCase):
         chain_manager.state.get_block_metadata = MagicMock(return_value=get_block_metadata_response)
 
         alice_xmss = get_alice_xmss()
-        chain_manager.state.get_address = MagicMock(return_value=AddressState.get_default(alice_xmss.address))
+        chain_manager.state.get_address_state = MagicMock(return_value=AddressState.get_default(alice_xmss.address))
         chain_manager.state.get_measurement = MagicMock(return_value=60)
 
         p2p_factory = Mock()
@@ -108,7 +108,7 @@ class TestNode(TestCase):
                        p2p_factory=p2p_factory,
                        sync_state=sync_state,
                        time_provider=time_provider,
-                       mining_credit_wallet=get_random_xmss().address,
+                       mining_address=get_random_xmss().address,
                        mining_thread_count=0)
 
             self.assertIsNotNone(node)
@@ -125,7 +125,7 @@ class TestNode(TestCase):
                    p2p_factory=p2p_factory,
                    sync_state=sync_state,
                    time_provider=time_provider,
-                   mining_credit_wallet=get_random_xmss().address,
+                   mining_address=get_random_xmss().address,
                    mining_thread_count=0)
 
         self.assertIsNotNone(node)

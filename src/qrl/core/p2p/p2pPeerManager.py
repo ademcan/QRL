@@ -11,9 +11,10 @@ from typing import Callable
 from pyqryptonight.pyqryptonight import UInt256ToString
 from qrl.core import config
 from qrl.core.misc import logger
+from qrl.core.misc.helper import parse_peer_addr
 from qrl.core.notification.Observable import Observable
 from qrl.core.notification.ObservableEvent import ObservableEvent
-from qrl.core.p2pObserver import P2PBaseObserver
+from qrl.core.p2p.p2pObserver import P2PBaseObserver
 from qrl.generated import qrllegacy_pb2, qrl_pb2
 
 
@@ -34,7 +35,6 @@ class P2PPeerManager(P2PBaseObserver):
                                        config.dev.peers_filename)
 
         self._observable = Observable(self)
-
         self._p2pfactory = None
 
     def register(self, message_type: EventType, func: Callable):
@@ -52,6 +52,7 @@ class P2PPeerManager(P2PBaseObserver):
                     known_peers = qrl_pb2.StoredPeers()
                     known_peers.ParseFromString(infile.read())
 
+                    # FIXME: Refactor, move to json?
                     self._peer_addresses |= set([peer.ip for peer in known_peers.peers])
                     self._peer_addresses |= set(config.user.peer_list)
                     return
@@ -67,10 +68,27 @@ class P2PPeerManager(P2PBaseObserver):
 
         logger.info('Known Peers: %s', self._peer_addresses)
 
+    @staticmethod
+    def get_valid_peers(peer_ips, peer_ip, public_port):
+        new_peers = set()
+
+        for ip_port in peer_ips:
+            try:
+                parse_peer_addr(ip_port)
+                new_peers.add(ip_port)
+            except Exception as e:
+                logger.warning("Invalid Peer Address %s", ip_port)
+                logger.warning("Sent by %s", peer_ip)
+                logger.exception(e)
+
+        if 0 < public_port <= 65535:
+            new_peers.add("{0}:{1}".format(peer_ip, public_port))
+
+        return new_peers
+
     def update_peer_addresses(self, peer_addresses: set) -> None:
         new_addresses = self._peer_addresses - set(peer_addresses)
 
-        # FIXME: Probably will be refactored
         if self._p2pfactory is not None:
             for peer_address in new_addresses:
                 self._p2pfactory.connect_peer(peer_address)
@@ -144,7 +162,7 @@ class P2PPeerManager(P2PBaseObserver):
         source.rate_limit = min(config.user.peer_rate_limit, message.veData.rate_limit)
 
         if message.veData.genesis_prev_hash != config.dev.genesis_prev_headerhash:
-            logger.warning('%s genesis_prev_headerhash mismatch', source.connection_id)
+            logger.warning('%s genesis_prev_headerhash mismatch', source.addr_remote)
             logger.warning('Expected: %s', config.dev.genesis_prev_headerhash)
             logger.warning('Found: %s', message.veData.genesis_prev_hash)
             source.loseConnection()
@@ -158,8 +176,11 @@ class P2PPeerManager(P2PBaseObserver):
         if message.plData.peer_ips is None:
             return
 
-        new_peers = set(ip for ip in message.plData.peer_ips)
+        new_peers = self.get_valid_peers(message.plData.peer_ips,
+                                         source.peer_ip,
+                                         message.plData.public_port)
         new_peers.discard(source.host_ip)  # Remove local address
+
         logger.info('%s peers data received: %s', source.peer_ip, new_peers)
         self.update_peer_addresses(new_peers)
 
@@ -189,7 +210,7 @@ class P2PPeerManager(P2PBaseObserver):
             delta = current_timestamp - self._peer_node_status[channel].timestamp
             if delta > config.user.chain_state_timeout:
                 del self._peer_node_status[channel]
-                logger.debug('>>>> No State Update [%18s] %2.2f (TIMEOUT)', channel.connection_id, delta)
+                logger.debug('>>>> No State Update [%18s] %2.2f (TIMEOUT)', channel.addr_remote, delta)
                 channel.loseConnection()
 
     def broadcast_chain_state(self, node_chain_state: qrl_pb2.NodeChainState):
@@ -211,7 +232,7 @@ class P2PPeerManager(P2PBaseObserver):
 
         source.bytes_sent -= message.p2pAckData.bytes_processed
         if source.bytes_sent < 0:
-            logger.warning('Disconnecting Peer %s', source.connection_id)
+            logger.warning('Disconnecting Peer %s', source.addr_remote)
             logger.warning('Reason: negative bytes_sent value')
             logger.warning('bytes_sent %s', source.bytes_sent)
             logger.warning('Ack bytes_processed %s', message.p2pAckData.bytes_processed)

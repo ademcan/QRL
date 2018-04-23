@@ -11,6 +11,7 @@ from pyqrllib.pyqrllib import bin2hstr
 from pyqryptonight.pyqryptonight import UInt256ToString
 
 from qrl.core import config
+from qrl.core.misc.helper import parse_peer_addr
 from qrl.core.processors.TxnProcessor import TxnProcessor
 from qrl.core.misc import ntp, logger
 from qrl.core.ESyncState import ESyncState
@@ -20,7 +21,7 @@ from qrl.core.Transaction import TransferTransaction, MessageTransaction, TokenT
     LatticePublicKey, SlaveTransaction
 from qrl.core.messagereceipt import MessageReceipt
 from qrl.core.node import SyncState
-from qrl.core.p2pprotocol import P2PProtocol
+from qrl.core.p2p.p2pprotocol import P2PProtocol
 from qrl.generated import qrllegacy_pb2, qrl_pb2
 
 
@@ -39,6 +40,7 @@ class P2PFactory(ServerFactory):
         self._ntp = ntp
         self._qrl_node = qrl_node
         self._chain_manager = chain_manager
+        self._chain_manager.set_broadcast_tx(self.broadcast_tx)
 
         self._syncing_enabled = False
         self._target_peer = None
@@ -52,7 +54,7 @@ class P2PFactory(ServerFactory):
 
         self.peer_blockheight = dict()
 
-        reactor.callLater(180, self.monitor_connections)
+        reactor.callLater(config.user.monitor_connections_interval, self.monitor_connections)
 
         self.p2p_msg_priority = {
             qrllegacy_pb2.LegacyMessage.VE: 0,
@@ -96,27 +98,31 @@ class P2PFactory(ServerFactory):
         return len(self._synced_peers_protocol) > 0
 
     def get_random_peer(self):
+        # FIXME: Used a named tuple to improve readability?
+        # FIXME: This probably can go the peerManager
         max_cumulative_difficulty = 0
-        for connection_id in self.peer_blockheight:
-            max_cumulative_difficulty = max(max_cumulative_difficulty, self.peer_blockheight[connection_id][2])
+        for addr_remote in self.peer_blockheight:
+            max_cumulative_difficulty = max(max_cumulative_difficulty, self.peer_blockheight[addr_remote][2])
 
-        connection_ids = []
-        for connection_id in self.peer_blockheight:
-            if self.peer_blockheight[connection_id][2] == max_cumulative_difficulty:
-                connection_ids.append(connection_id)
+        best_connection_ids = []
+        for addr_remote in self.peer_blockheight:
+            if self.peer_blockheight[addr_remote][2] == max_cumulative_difficulty:
+                best_connection_ids.append(addr_remote)
 
         selected_peer_connections = []
-        for connection_id in connection_ids:
+        for addr_remote in best_connection_ids:
             for peer_conn in self._peer_connections:
-                if peer_conn.connection_id == connection_id:
+                if peer_conn.addr_remote == addr_remote:
                     selected_peer_connections.append(peer_conn)
+
         if len(selected_peer_connections) == 0 or max_cumulative_difficulty == 0:
             return None
 
         return random.sample(selected_peer_connections, 1)[0]
 
-    def update_peer_blockheight(self, connection_id, block_number, headerhash, cumulative_difficulty):
-        self.peer_blockheight[connection_id] = [block_number, headerhash, int(UInt256ToString(cumulative_difficulty))]
+    def update_peer_blockheight(self, addr_remote, block_number, headerhash, cumulative_difficulty):
+        # FIXME: Use a named tuple to improve readability?
+        self.peer_blockheight[addr_remote] = [block_number, headerhash, int(UInt256ToString(cumulative_difficulty))]
 
     def request_peer_blockheight(self):
         for peer in self._peer_connections:
@@ -150,9 +156,8 @@ class P2PFactory(ServerFactory):
     def reached_conn_limit(self):
         return len(self._peer_connections) >= config.user.max_peers_limit
 
-    def get_connected_peer_ips(self):
-        # FIXME: Convert self._peer_connections to set
-        return set([peer.peer_ip for peer in self._peer_connections])
+    def get_connected_peer_addrs(self):
+        return set([peer.addr_remote for peer in self._peer_connections])
 
     ###################################################
     ###################################################
@@ -183,8 +188,8 @@ class P2PFactory(ServerFactory):
 
         if source != self._target_peer:
             logger.warning('Received block from unexpected peer')
-            logger.warning('Expected peer: %s', self._target_peer.connection_id)
-            logger.warning('Found peer: %s', source.connection_id)
+            logger.warning('Expected peer: %s', self._target_peer.addr_remote)
+            logger.warning('Found peer: %s', source.addr_remote)
             return
 
         if block.block_number != self._last_requested_block_idx:
@@ -199,8 +204,10 @@ class P2PFactory(ServerFactory):
             logger.warning('Found headerhash %s', block.headerhash)
             return
 
-        # FIXME: This check should not be necessary
-        if not self._chain_manager.add_block(block):
+        if self._chain_manager.add_block(block):
+            if self._chain_manager.last_block.headerhash == block.headerhash:
+                self.pow.suspend_mining_timestamp = ntp.getTime() + config.dev.sync_delay_mining
+        else:
             logger.warning('Failed to Add Block')
             return
 
@@ -225,7 +232,7 @@ class P2PFactory(ServerFactory):
         return self._syncing_enabled
 
     def is_syncing_finished(self, force_finish=False):
-        curr_index = self._last_requested_block_idx - self._target_node_header_hash.block_number + 1
+        curr_index = self._last_requested_block_idx - self._target_node_header_hash.block_number
         if curr_index == len(self._target_node_header_hash.headerhashes) or force_finish:
             self._last_requested_block_idx = None
             self._target_node_header_hash = None
@@ -263,7 +270,7 @@ class P2PFactory(ServerFactory):
         self._target_peer.send_fetch_block(self._last_requested_block_idx)
         reactor.download_monitor = reactor.callLater(20, self.peer_fetch_block, retry + 1)
 
-    def compare_and_sync(self, peer, node_header_hash: qrl_pb2.NodeHeaderHash):
+    def compare_and_sync(self, source_peer, node_header_hash: qrl_pb2.NodeHeaderHash):
         if self._syncing_enabled:
             logger.info('>> Ignoring compare_and_sync Syncing Enabled')
             return
@@ -282,7 +289,7 @@ class P2PFactory(ServerFactory):
             fork_found = True
 
         if fork_found or (last_block.block_number < node_last_block_number):
-            self._target_peer = peer
+            self._target_peer = source_peer
             self._target_node_header_hash = node_header_hash
             self._last_requested_block_idx = fork_block_number
             self._syncing_enabled = True
@@ -371,7 +378,7 @@ class P2PFactory(ServerFactory):
         return True
 
     def broadcast_tx(self, tx: TransferTransaction):
-        logger.info('<<<Transmitting TX: %s', tx.txhash)
+        logger.info('<<<Transmitting TX: %s', bin2hstr(tx.txhash))
 
         if isinstance(tx, MessageTransaction):
             legacy_type = qrllegacy_pb2.LegacyMessage.MT
@@ -460,7 +467,7 @@ class P2PFactory(ServerFactory):
     # Event handlers / Comms related
 
     def start_listening(self):
-        reactor.listenTCP(9000, self)
+        reactor.listenTCP(config.user.p2p_local_port, self)
 
     # NOTE: No need to refactor, it is obsolete
     def clientConnectionLost(self, connector, reason):  # noqa
@@ -473,56 +480,39 @@ class P2PFactory(ServerFactory):
         logger.debug('Started connecting: %s', connector)
 
     def add_connection(self, conn_protocol) -> bool:
-        # TODO: Most of this can go the peer manager
-
-        if self._qrl_node.is_banned(conn_protocol.peer_ip):
-            conn_protocol.loseConnection()
-            return False
-
-        # FIXME: (For AWS) This could be problematic for other users
-        # FIXME: identify nodes by an GUID?
-        if config.dev.public_ip and conn_protocol.peer_ip == config.dev.public_ip:
+        # TODO: Most of this can go peer manager
+        if self._qrl_node.is_banned(conn_protocol.addr_remote):
             conn_protocol.loseConnection()
             return False
 
         if self.reached_conn_limit:
             # FIXME: Should we stop listening to avoid unnecessary load due to many connections?
-            logger.info('Peer limit hit. Disconnecting client %s', conn_protocol.peer_ip)
+            logger.info('Peer limit hit. Disconnecting client %s', conn_protocol.addr_remote)
             conn_protocol.loseConnection()
             return False
 
-        peer_list = self._qrl_node.peer_addresses
-        if conn_protocol.peer_ip == conn_protocol.host_ip:
-            if conn_protocol.peer_ip in peer_list:
-                logger.info('Self in peer_list, removing..')
-                peer_list.remove(conn_protocol.peer_ip)
-                self._qrl_node.peer_manager.update_peer_addresses(peer_list)
-
+        if conn_protocol.peer_ip == conn_protocol.host_ip and conn_protocol.peer_port == config.user.p2p_public_port:
+            peer_list = [p for p in self._qrl_node.peer_addresses if p != conn_protocol.addr_remote]
+            self._qrl_node.peer_manager.update_peer_addresses(peer_list)
             conn_protocol.loseConnection()
             return False
 
         self._peer_connections.append(conn_protocol)
 
-        if conn_protocol.peer_ip not in peer_list:
-            logger.debug('Adding to peer_list')
-            peer_list.add(conn_protocol.peer_ip)
-            self._qrl_node.peer_manager.update_peer_addresses(peer_list)
-
-        logger.debug('>>> new peer connection : %s:%s ', conn_protocol.peer_ip, str(conn_protocol.peer_port))
-
+        logger.debug('>>> new connection: %s ', conn_protocol.addr_remote)
         return True
 
     def remove_connection(self, conn_protocol):
         if conn_protocol in self._peer_connections:
             self._peer_connections.remove(conn_protocol)
 
-        if conn_protocol.connection_id in self.peer_blockheight:
-            del self.peer_blockheight[conn_protocol.connection_id]
+        if conn_protocol.addr_remote in self.peer_blockheight:
+            del self.peer_blockheight[conn_protocol.addr_remote]
 
         self._synced_peers_protocol.discard(conn_protocol)
 
     def monitor_connections(self):
-        reactor.callLater(180, self.monitor_connections)
+        reactor.callLater(config.user.monitor_connections_interval, self.monitor_connections)
 
         if len(self._peer_connections) == 0:
             logger.warning('No Connected Peer Found')
@@ -538,5 +528,9 @@ class P2PFactory(ServerFactory):
                 self.connect_peer(ip)
 
     def connect_peer(self, peer_address):
-        if peer_address not in self.get_connected_peer_ips():
-            reactor.connectTCP(peer_address, 9000, self)
+        try:
+            ip_addr, ip_port = parse_peer_addr(peer_address)
+            if peer_address not in self.get_connected_peer_addrs():
+                reactor.connectTCP(ip_addr, ip_port, self)
+        except Exception as e:
+            logger.warning("Could not connect to %s - %s", peer_address, str(e))

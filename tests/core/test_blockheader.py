@@ -3,8 +3,13 @@
 # file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 from unittest import TestCase
 
+from mock import mock
+from pyqrllib.pyqrllib import bin2hstr
+
+from qrl.core import config
 from qrl.core.misc import logger
 from qrl.core.BlockHeader import BlockHeader
+from qrl.crypto.misc import sha256
 
 logger.initialize_default()
 
@@ -14,6 +19,52 @@ class TestBlockHeader(TestCase):
         super(TestBlockHeader, self).__init__(*args, **kwargs)
 
     def test_init(self):
-        # TODO: Not much going on here..
         block_header = BlockHeader()
         self.assertIsNotNone(block_header)  # just to avoid warnings
+
+    def test_init2(self):
+        block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+        self.assertIsNotNone(block_header)  # just to avoid warnings
+
+    def test_blob(self):
+        with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
+            time_mock.return_value = 1615270948
+
+            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+            self.assertEquals('0074aa496ffe19107faaf418b720fb5b8446ba4b595c178fcf099c99b3dee99860d788c77910a9000000'
+                              '000000000000000000ede0d022b37421b81b7bbcf5b497fb89408c05c7d713c5e1e5187b02aa9344cf83',
+                              bin2hstr(block_header.mining_blob))
+            self.assertEquals(config.dev.mining_blob_size, len(block_header.mining_blob))
+
+    def test_hash(self):
+        with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
+            time_mock.return_value = 1615270948
+
+            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+            header_hash = block_header.generate_headerhash()
+
+            self.assertEquals('d41ae9dede611316d9605547e3429ae777a28ec0e39b371acf7ea938b94a4a86',
+                              bin2hstr(header_hash))
+
+            self.assertEquals(bin2hstr(header_hash),
+                              bin2hstr(block_header.headerhash))
+
+            self.assertEquals(32, len(block_header.headerhash))
+
+    def test_hash_nonce(self):
+        with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
+            time_mock.return_value = 1615270948
+
+            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+
+            block_header.set_nonces(100, 0)
+
+            header_hash = block_header.generate_headerhash()
+
+            self.assertEquals('8828d59f5bd3a2eae84b5d5b603d90236bc85f8edfd90adf77d64cb109f55f34',
+                              bin2hstr(header_hash))
+
+            self.assertEquals(bin2hstr(header_hash),
+                              bin2hstr(block_header.headerhash))
+
+            self.assertEquals(32, len(block_header.headerhash))

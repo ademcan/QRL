@@ -22,15 +22,12 @@ class UserConfig(object):
         UserConfig.__instance = self
 
         # Default configuration
-        self.mining_enabled = True
+        self.mining_enabled = False
+        self.mining_address = ''
         self.mining_thread_count = 0  # 0 to auto detect thread count based on CPU/GPU number of processors
 
         # Ephemeral Configuration
         self.accept_ephemeral = True
-
-        # Cache Size
-        self.lru_state_cache_size = 10
-        self.max_state_limit = 10
 
         # PEER Configuration
         self.enable_peer_discovery = True  # Allows to discover new peers from the connected peers
@@ -39,35 +36,95 @@ class UserConfig(object):
                           '104.251.219.40',
                           '104.237.3.185',
                           '35.177.60.137']
-        self.peer_rate_limit = 500  # Max Number of messages per minute per peer
+        self.p2p_local_port = 9000   # Locally binded port at which node will listen for connection
+        self.p2p_public_port = 9000  # Public port forwarding connections to server
+
+        self.peer_rate_limit = 500   # Max Number of messages per minute per peer
 
         self.ntp_servers = ['pool.ntp.org', 'ntp.ubuntu.com']
         self.ban_minutes = 20              # Allows to ban a peer's IP who is breaking protocol
 
+        self.monitor_connections_interval = 30  # Monitor connection every 30 seconds
         self.max_peers_limit = 100  # Number of allowed peers
         self.chain_state_timeout = 180
         self.chain_state_broadcast_period = 30
         # must be less than ping_timeout
 
-        self.qrl_dir = os.path.join(expanduser("~"), ".qrl")
-        self.data_dir = os.path.join(self.qrl_dir, "data")
-        self.config_path = os.path.join(self.qrl_dir, "config.yml")
-        self.log_path = os.path.join(self.qrl_dir, "qrl.log")
-        self.wallet_staking_dir = os.path.join(self.qrl_dir, "wallet")
+        self.transaction_pool_size = 25000
+        self.pending_transaction_pool_size = 75000
+        # 1% of the pending_transaction_pool will be reserved for moving stale txn
+        self.pending_transaction_pool_reserve = int(self.pending_transaction_pool_size * 0.01)
+        self.stale_transaction_threshold = 15  # 15 Blocks
 
-        self.mining_pool_payment_wallet_path = '/home/.qrl/payment_slaves.json'  # Only for mining Pool
+        self._qrl_dir = expanduser(os.path.join("~/.qrl"))
 
         # ======================================
-        #    MINING WALLET CONFIGURATION
+        #        ADMIN API CONFIGURATION
         # ======================================
-        self.slaves_filename = 'slaves.json'
+        self.admin_api_enabled = False
+        self.admin_api_host = "127.0.0.1"
+        self.admin_api_port = 9008
+        self.admin_api_threads = 1
+        self.admin_api_max_concurrent_rpc = 100
 
-        self.wallet_dir = os.path.join(self.qrl_dir)
+        # ======================================
+        #        PUBLIC API CONFIGURATION
+        # ======================================
+        self.public_api_enabled = True
+        self.public_api_host = "0.0.0.0"
+        self.public_api_port = 9009
+        self.public_api_threads = 1
+        self.public_api_max_concurrent_rpc = 100
 
-        self.load_yaml(self.config_path)
+        # ======================================
+        #        MINING API CONFIGURATION
+        # ======================================
+        self.mining_api_enabled = False
+        self.mining_api_host = "127.0.0.1"
+        self.mining_api_port = 9007
+        self.mining_api_threads = 1
+        self.mining_api_max_concurrent_rpc = 100
 
+        # ======================================
+        #        GRPC PROXY CONFIGURATION
+        # ======================================
+        self.grpc_proxy_host = "127.0.0.1"
+        self.grpc_proxy_port = 18090
         self.p2p_q_size = 1000
         self.outgoing_message_expiry = 90  # Outgoing message expires after 90 seconds
+
+        # WARNING! loading should be the last line.. any new setting after this will not be updated by the config file
+        self.load_yaml(self.config_path)
+        # WARNING! loading should be the last line.. any new setting after this will not be updated by the config file
+
+    @property
+    def qrl_dir(self):
+        return self._qrl_dir
+
+    @qrl_dir.setter
+    def qrl_dir(self, new_qrl_dir):
+        self._qrl_dir = new_qrl_dir
+        self.load_yaml(self.config_path)
+
+    @property
+    def wallet_dir(self):
+        return expanduser(self.qrl_dir)
+
+    @property
+    def data_dir(self):
+        return expanduser(os.path.join(self.qrl_dir, "data"))
+
+    @property
+    def config_path(self):
+        return expanduser(os.path.join(self.qrl_dir, "config.yml"))
+
+    @property
+    def log_path(self):
+        return expanduser(os.path.join(self.qrl_dir, "qrl.log"))
+
+    @property
+    def mining_pool_payment_wallet_path(self):
+        return expanduser(os.path.join(self.qrl_dir, 'payment_slaves.json'))
 
     @staticmethod
     def getInstance():
@@ -106,7 +163,6 @@ class DevConfig(object):
         DevConfig.__instance = self
 
         self.version = version
-        self.required_version = '0.0.'
         self.genesis_prev_headerhash = b'Excession'
 
         ################################################################
@@ -124,7 +180,6 @@ class DevConfig(object):
         self.message_receipt_timeout = 10  # request timeout for full message
         self.message_buffer_size = 3 * 1024 * 1024  # 3 MB
 
-        self.transaction_pool_size = 25000
         self.max_coin_supply = decimal.Decimal(105000000)
         self.coin_remaning_at_genesis = decimal.Decimal(40000000)
         self.timestamp_error = 5  # Error in second
@@ -136,7 +191,7 @@ class DevConfig(object):
 
         # Maximum number of ots index upto which OTS index should be tracked. Any OTS index above the specified value
         # will be managed by OTS Counter
-        self.max_ots_tracking_index = 1024                                  #
+        self.max_ots_tracking_index = 4096                                  #
         self.mining_nonce_offset = 39
         self.extra_nonce_offset = 43
         self.mining_blob_size = 84
@@ -171,6 +226,12 @@ class DevConfig(object):
         self.transaction_multi_output_limit = 100
 
         # ======================================
+        #          TOKEN TRANSACTION
+        # ======================================
+        self.max_token_symbol_length = 10
+        self.max_token_name_length = 30
+
+        # ======================================
         #       DIFFICULTY CONTROLLER
         # ======================================
         self.N_measurement = 250
@@ -194,6 +255,7 @@ class DevConfig(object):
         self.max_receivable_bytes = 10 * 1024 * 1024           # 10 MB [Temporary Restriction]
         self.reserved_quota = 1024                             # 1 KB
         self.max_bytes_out = self.max_receivable_bytes - self.reserved_quota
+        self.sync_delay_mining = 60  # Delay mining by 60 seconds while syncing blocks to mainchain
 
         # ======================================
         #            API SETTINGS

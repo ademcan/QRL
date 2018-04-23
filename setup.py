@@ -8,6 +8,7 @@
 
 import sys
 from setuptools import setup
+import versioneer
 
 # Add here console scripts and other entry points in ini-style format
 entry_points = """
@@ -15,6 +16,7 @@ entry_points = """
     start_qrl = qrl.main:main
     qrl_start = qrl.main:main
     qrl = qrl.cli:main
+    qrl_grpc_proxy = qrl.grpcProxy:main
     qrl_measure = qrl.measure:main
 """
 
@@ -24,6 +26,8 @@ def setup_package():
     sphinx = ['sphinx'] if needs_sphinx else []
     setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0'] + sphinx,
           entry_points=entry_points,
+          version=versioneer.get_version(),
+          cmdclass=versioneer.get_cmdclass(),
           use_pyscaffold=True)
 
 
