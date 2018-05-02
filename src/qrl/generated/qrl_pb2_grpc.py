@@ -32,6 +32,11 @@ class PublicAPIStub(object):
         request_serializer=qrl__pb2.GetKnownPeersReq.SerializeToString,
         response_deserializer=qrl__pb2.GetKnownPeersResp.FromString,
         )
+    self.GetPeersStat = channel.unary_unary(
+        '/qrl.PublicAPI/GetPeersStat',
+        request_serializer=qrl__pb2.GetPeersStatReq.SerializeToString,
+        response_deserializer=qrl__pb2.GetPeersStatResp.FromString,
+        )
     self.GetStats = channel.unary_unary(
         '/qrl.PublicAPI/GetStats',
         request_serializer=qrl__pb2.GetStatsReq.SerializeToString,
@@ -61,6 +66,11 @@ class PublicAPIStub(object):
         '/qrl.PublicAPI/PushTransaction',
         request_serializer=qrl__pb2.PushTransactionReq.SerializeToString,
         response_deserializer=qrl__pb2.PushTransactionResp.FromString,
+        )
+    self.GetMessageTxn = channel.unary_unary(
+        '/qrl.PublicAPI/GetMessageTxn',
+        request_serializer=qrl__pb2.MessageTxnReq.SerializeToString,
+        response_deserializer=qrl__pb2.TransferCoinsResp.FromString,
         )
     self.GetTokenTxn = channel.unary_unary(
         '/qrl.PublicAPI/GetTokenTxn',
@@ -97,11 +107,6 @@ class PublicAPIStub(object):
         request_serializer=qrl__pb2.CollectEphemeralMessageReq.SerializeToString,
         response_deserializer=qrl__pb2.CollectEphemeralMessageResp.FromString,
         )
-    self.GetTokenDetailedList = channel.unary_unary(
-        '/qrl.PublicAPI/GetTokenDetailedList',
-        request_serializer=qrl__pb2.Empty.SerializeToString,
-        response_deserializer=qrl__pb2.TokenDetailedList.FromString,
-        )
 
 
 class PublicAPIServicer(object):
@@ -123,6 +128,12 @@ class PublicAPIServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def GetKnownPeers(self, request, context):
+    # missing associated documentation comment in .proto file
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetPeersStat(self, request, context):
     # missing associated documentation comment in .proto file
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -159,6 +170,12 @@ class PublicAPIServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def PushTransaction(self, request, context):
+    # missing associated documentation comment in .proto file
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetMessageTxn(self, request, context):
     # missing associated documentation comment in .proto file
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -208,12 +225,6 @@ class PublicAPIServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetTokenDetailedList(self, request, context):
-    # missing associated documentation comment in .proto file
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
 
 def add_PublicAPIServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -226,6 +237,11 @@ def add_PublicAPIServicer_to_server(servicer, server):
           servicer.GetKnownPeers,
           request_deserializer=qrl__pb2.GetKnownPeersReq.FromString,
           response_serializer=qrl__pb2.GetKnownPeersResp.SerializeToString,
+      ),
+      'GetPeersStat': grpc.unary_unary_rpc_method_handler(
+          servicer.GetPeersStat,
+          request_deserializer=qrl__pb2.GetPeersStatReq.FromString,
+          response_serializer=qrl__pb2.GetPeersStatResp.SerializeToString,
       ),
       'GetStats': grpc.unary_unary_rpc_method_handler(
           servicer.GetStats,
@@ -256,6 +272,11 @@ def add_PublicAPIServicer_to_server(servicer, server):
           servicer.PushTransaction,
           request_deserializer=qrl__pb2.PushTransactionReq.FromString,
           response_serializer=qrl__pb2.PushTransactionResp.SerializeToString,
+      ),
+      'GetMessageTxn': grpc.unary_unary_rpc_method_handler(
+          servicer.GetMessageTxn,
+          request_deserializer=qrl__pb2.MessageTxnReq.FromString,
+          response_serializer=qrl__pb2.TransferCoinsResp.SerializeToString,
       ),
       'GetTokenTxn': grpc.unary_unary_rpc_method_handler(
           servicer.GetTokenTxn,
@@ -291,11 +312,6 @@ def add_PublicAPIServicer_to_server(servicer, server):
           servicer.CollectEphemeralMessage,
           request_deserializer=qrl__pb2.CollectEphemeralMessageReq.FromString,
           response_serializer=qrl__pb2.CollectEphemeralMessageResp.SerializeToString,
-      ),
-      'GetTokenDetailedList': grpc.unary_unary_rpc_method_handler(
-          servicer.GetTokenDetailedList,
-          request_deserializer=qrl__pb2.Empty.FromString,
-          response_serializer=qrl__pb2.TokenDetailedList.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

@@ -19,6 +19,8 @@ service PublicAPI
     rpc GetNodeState (GetNodeStateReq) returns (GetNodeStateResp);
     rpc GetKnownPeers (GetKnownPeersReq) returns (GetKnownPeersResp);
 
+    rpc GetPeersStat (GetPeersStatReq) returns (GetPeersStatResp);
+
     rpc GetStats (GetStatsReq) returns (GetStatsResp);
 
     rpc GetAddressState (GetAddressStateReq) returns (GetAddressStateResp);
@@ -28,6 +30,8 @@ service PublicAPI
 
     rpc TransferCoins (TransferCoinsReq) returns (TransferCoinsResp);
     rpc PushTransaction (PushTransactionReq) returns (PushTransactionResp);
+
+    rpc GetMessageTxn (MessageTxnReq) returns (TransferCoinsResp);
 
     rpc GetTokenTxn (TokenTxnReq) returns (TransferCoinsResp);
 
@@ -43,8 +47,6 @@ service PublicAPI
     rpc PushEphemeralMessage (PushEphemeralMessageReq) returns (PushTransactionResp);
     rpc CollectEphemeralMessage (CollectEphemeralMessageReq) returns (CollectEphemeralMessageResp);
     // ------------------------------
-
-    rpc GetTokenDetailedList (Empty) returns (TokenDetailedList);
 }
 
 // This is a place holder for testing/instrumentation APIs
@@ -88,6 +90,18 @@ message GetKnownPeersReq { }
 message GetKnownPeersResp {
     NodeInfo node_info = 1;             // NodeInfo object containing node state information
     repeated Peer known_peers = 2;      // List of Peer objects containing peer nodes detailed information
+}
+
+/**
+ * Represents a query to get connected peers stat
+*/
+message GetPeersStatReq { }
+
+/**
+ * Represents the reply message to peers stat query
+*/
+message GetPeersStatResp {
+    repeated PeerStat peers_stat = 1;    // PeerState object contains peer_ip, port and peer state information
 }
 
 /**
@@ -213,6 +227,13 @@ message PushTransactionResp {
     ResponseCode error_code = 1;        // Resonse code, one of (UNKNOWN, ERROR, VALIDATION_FAILED, SUBMITTED)
     string error_description = 2;       // Detailed description of the error
     bytes tx_hash = 3;                  // Transaction hash
+}
+
+message MessageTxnReq {
+    bytes master_addr = 1;
+    bytes message = 2;
+    uint64 fee = 3;
+    bytes xmss_pk = 4;
 }
 
 message TokenTxnReq {
@@ -449,10 +470,6 @@ message TokenList {
     repeated bytes token_txhash = 1;
 }
 
-message TokenDetailedList {
-    repeated TransactionExtended extended_tokens = 1;
-}
-
 message TokenMetadata {
     bytes token_txhash = 1;
     repeated bytes transfer_token_tx_hashes = 2;
@@ -548,6 +565,12 @@ message StateObjects {
 
 message LRUStateCache {
 
+}
+
+message PeerStat {
+    bytes peer_ip = 1;
+    uint32 port = 2;
+    NodeChainState node_chain_state = 3;
 }
 
 message NodeChainState {

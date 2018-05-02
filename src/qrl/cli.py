@@ -39,12 +39,6 @@ class CLIContext(object):
         self.wallet_path = os.path.join(self.wallet_dir, 'wallet.json')
         self.json = json
 
-        self.channel_public = grpc.insecure_channel(self.node_public_address)
-        self.channel_admin = grpc.insecure_channel(self.node_admin_address)
-
-        self.stub_admin_api = qrl_pb2_grpc.AdminAPIStub(self.channel_admin)
-        self.stub_public_api = qrl_pb2_grpc.PublicAPIStub(self.channel_public)
-
     @property
     def node_public_address(self):
         return '{}:{}'.format(self.host, self.port_public)
@@ -53,10 +47,25 @@ class CLIContext(object):
     def node_admin_address(self):
         return '{}:{}'.format(self.host, self.port_admin)
 
+    @property
+    def channel_public(self):
+        return grpc.insecure_channel(self.node_public_address)
+
+    @property
+    def channel_admin(self):
+        return grpc.insecure_channel(self.node_admin_address)
+
+    def get_stub_admin_api(self):
+        return qrl_pb2_grpc.AdminAPIStub(self.channel_admin)
+
+    def get_stub_public_api(self):
+        return qrl_pb2_grpc.PublicAPIStub(self.channel_public)
+
 
 def _admin_get_local_addresses(ctx):
     try:
-        getAddressStateResp = ctx.obj.stub_admin_api.GetLocalAddresses(qrl_pb2.GetLocalAddressesReq(), timeout=5)
+        stub = ctx.obj.get_stub_admin()
+        getAddressStateResp = stub.GetLocalAddresses(qrl_pb2.GetLocalAddressesReq(), timeout=5)
         return getAddressStateResp.addresses
     except Exception as e:
         click.echo('Error connecting to node', color='red')
@@ -131,8 +140,9 @@ def _print_addresses(ctx, addresses: List[OutputMessage], source_description):
 
 
 def _public_get_address_balance(ctx, address):
+    stub = ctx.obj.get_stub_public_api()
     getAddressStateReq = qrl_pb2.GetAddressStateReq(address=_parse_qaddress(address))
-    getAddressStateResp = ctx.obj.stub_public_api.GetAddressState(getAddressStateReq, timeout=1)
+    getAddressStateResp = stub.GetAddressState(getAddressStateReq, timeout=1)
     return getAddressStateResp.state.balance
 
 
@@ -142,6 +152,10 @@ def _select_wallet(ctx, src):
         if not wallet.addresses:
             click.echo('This command requires a local wallet')
             return
+
+        if wallet.encrypted:
+            secret = click.prompt('The wallet is encrypted. Enter password', hide_input=True)
+            wallet.decrypt(secret)
 
         if src.isdigit():
             src = int(src)
@@ -188,6 +202,7 @@ def _parse_qaddress(qaddress: str) -> bytes:
     :param qaddress:
     :return:
     """
+
     return _parse_hexblob(qaddress[1:])
 
 
@@ -256,9 +271,9 @@ def wallet_ls(ctx):
 @click.option('--height', default=config.dev.xmss_tree_height,
               help='XMSS tree height. The resulting tree will be good for 2^height signatures')
 @click.option('--hash_function', type=click.Choice(list(hash_functions.keys())), default='shake128',
-              help='The hash function used to build the XMSS tree. Defaults to shake128. Useful if one hashing function'
-                   'is found cryptographically vulnerable in the future.')
-def wallet_gen(ctx, height, hash_function):
+              help='Hash function used to build the XMSS tree [default=shake128]')
+@click.option('--encrypt', default=False, is_flag=True, help='Encrypts important fields with AES')
+def wallet_gen(ctx, height, hash_function, encrypt):
     """
     Generates a new wallet with one address
     """
@@ -266,21 +281,26 @@ def wallet_gen(ctx, height, hash_function):
         click.echo('This command is unsupported for remote wallets')
         return
 
-    # FIXME: If the wallet is there, it should fail
     wallet = Wallet(wallet_path=ctx.obj.wallet_path)
-    if len(wallet.address_items) == 0:
-        wallet.add_new_address(height, hash_function)
-        _print_addresses(ctx, wallet.address_items, config.user.wallet_dir)
-    else:
-        # FIXME: !!!!!
+    if len(wallet.address_items) > 0:
         click.echo("Wallet already exists")
+        return
+
+    wallet.add_new_address(height, hash_function)
+
+    _print_addresses(ctx, wallet.address_items, config.user.wallet_dir)
+
+    if encrypt:
+        secret = click.prompt('Enter password to encrypt wallet with', hide_input=True, confirmation_prompt=True)
+        wallet.encrypt(secret)
+
+    wallet.save()
 
 
 @qrl.command()
 @click.option('--height', type=int, default=config.dev.xmss_tree_height, prompt=False)
 @click.option('--hash_function', type=click.Choice(list(hash_functions.keys())), default='shake128',
-              help='The hash function used to build the XMSS tree. Defaults to shake128. Useful if one hashing function'
-                   'is found cryptographically vulnerable in the future.')
+              help='Hash function used to build the XMSS tree [default=shake128]')
 @click.pass_context
 def wallet_add(ctx, height, hash_function):
     """
@@ -291,8 +311,19 @@ def wallet_add(ctx, height, hash_function):
         return
 
     wallet = Wallet(wallet_path=ctx.obj.wallet_path)
+    wallet_was_encrypted = wallet.encrypted
+    if wallet.encrypted:
+        secret = click.prompt('The wallet is encrypted. Enter password', hide_input=True)
+        wallet.decrypt(secret)
+
     wallet.add_new_address(height, hash_function)
+
     _print_addresses(ctx, wallet.address_items, config.user.wallet_dir)
+
+    if wallet_was_encrypted:
+        wallet.encrypt(secret)
+
+    wallet.save()
 
 
 @qrl.command()
@@ -324,6 +355,7 @@ def wallet_recover(ctx, seed_type):
         bin_seed = hstr2bin(seed)
 
     walletObj = Wallet(wallet_path=ctx.obj.wallet_path)
+
     recovered_xmss = XMSS.from_extended_seed(bin_seed)
     print('Recovered Wallet Address : %s' % (Wallet._get_Qaddress(recovered_xmss.address),))
     for addr in walletObj.address_items:
@@ -334,6 +366,7 @@ def wallet_recover(ctx, seed_type):
     if click.confirm('Do you want to save the recovered wallet?'):
         click.echo('Saving...')
         walletObj.append_xmss(recovered_xmss)
+        walletObj.save()
         click.echo('Done')
         _print_addresses(ctx, walletObj.address_items, config.user.wallet_dir)
 
@@ -350,6 +383,9 @@ def wallet_secret(ctx, wallet_idx):
         return
 
     wallet = Wallet(wallet_path=ctx.obj.wallet_path)
+    if wallet.encrypted:
+        secret = click.prompt('The wallet is encrypted. Enter password', hide_input=True)
+        wallet.decrypt(secret)
 
     if 0 <= wallet_idx < len(wallet.address_items):
         address_item = wallet.address_items[wallet_idx]
@@ -394,6 +430,28 @@ def wallet_rm(ctx, wallet_idx, skip_confirmation):
 
 
 @qrl.command()
+@click.pass_context
+def wallet_encrypt(ctx):
+    wallet = Wallet(wallet_path=ctx.obj.wallet_path)
+    click.echo('Encrypting wallet at {}'.format(wallet.wallet_path))
+
+    secret = click.prompt('Enter password', hide_input=True, confirmation_prompt=True)
+    wallet.encrypt(secret)
+    wallet.save()
+
+
+@qrl.command()
+@click.pass_context
+def wallet_decrypt(ctx):
+    wallet = Wallet(wallet_path=ctx.obj.wallet_path)
+    click.echo('Decrypting wallet at {}'.format(wallet.wallet_path))
+
+    secret = click.prompt('Enter password', hide_input=True, confirmation_prompt=True)
+    wallet.decrypt(secret)
+    wallet.save()
+
+
+@qrl.command()
 @click.option('--src', type=str, default='', prompt=True, help='source address or index')
 @click.option('--master', type=str, default='', prompt=True, help='master QRL address')
 @click.option('--dst', type=str, prompt=True, help='List of destination addresses')
@@ -428,7 +486,8 @@ def tx_prepare(ctx, src, master, dst, amounts, fee, pk):
                                                 master_addr=master_addr)
 
     try:
-        transferCoinsResp = ctx.obj.stub_public_api.TransferCoins(transferCoinsReq, timeout=5)
+        stub = ctx.obj.get_stub_public_api()
+        transferCoinsResp = stub.TransferCoins(transferCoinsReq, timeout=5)
     except grpc.RpcError as e:
         click.echo(e.details())
         quit(1)
@@ -492,7 +551,8 @@ def slave_tx_generate(ctx, src, master, number_of_slaves, access_type, fee, pk, 
                                       master_addr=master_addr)
 
     try:
-        slaveTxnResp = ctx.obj.stub_public_api.GetSlaveTxn(slaveTxnReq, timeout=5)
+        stub = ctx.obj.get_stub_public_api()
+        slaveTxnResp = stub.GetSlaveTxn(slaveTxnReq, timeout=5)
         tx = Transaction.from_pbdata(slaveTxnResp.extended_transaction_unsigned.tx)
         tx.sign(src_xmss)
         with open('slaves.json', 'w') as f:
@@ -570,9 +630,62 @@ def tx_push(ctx, txblob):
         click.echo('Signature missing')
         quit(1)
 
+    stub = ctx.obj.get_stub_public_api()
     pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
-    pushTransactionResp = ctx.obj.stub_public_api.PushTransaction(pushTransactionReq, timeout=5)
+    pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
     print(pushTransactionResp.error_code)
+
+
+@qrl.command()
+@click.option('--src', type=str, default='', prompt=True, help='signer QRL address')
+@click.option('--master', type=str, default='', prompt=True, help='master QRL address')
+@click.option('--message', type=str, prompt=True, help='Message (max 80 bytes)')
+@click.option('--fee', type=Decimal, default=0.0, prompt=True, help='fee in Quanta')
+@click.option('--ots_key_index', default=0, prompt=True, help='OTS key Index')
+@click.pass_context
+def tx_message(ctx, src, master, message, fee, ots_key_index):
+    """
+    Transfer coins from src to dst
+    """
+    if not ctx.obj.remote:
+        click.echo('This command is unsupported for local wallets')
+        return
+
+    try:
+        _, src_xmss = _select_wallet(ctx, src)
+        if not src_xmss:
+            click.echo("A local wallet is required to sign the transaction")
+            quit(1)
+
+        address_src_pk = src_xmss.pk
+        src_xmss.set_ots_index(ots_key_index)
+
+        message = message.encode()
+
+        master_addr = _parse_qaddress(master)
+        fee_shor = _shorize(fee)
+    except Exception as e:
+        click.echo("Error validating arguments: {}".format(e))
+        quit(1)
+
+    try:
+        stub = ctx.obj.get_stub_public_api()
+        messageTxnReq = qrl_pb2.MessageTxnReq(message=message,
+                                              fee=fee_shor,
+                                              xmss_pk=address_src_pk,
+                                              master_addr=master_addr)
+
+        transferCoinsResp = stub.GetMessageTxn(messageTxnReq, timeout=5)
+
+        tx = Transaction.from_pbdata(transferCoinsResp.extended_transaction_unsigned.tx)
+        tx.sign(src_xmss)
+
+        pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
+        pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
+
+        print(pushTransactionResp)
+    except Exception as e:
+        print("Error {}".format(str(e)))
 
 
 @qrl.command()
@@ -608,19 +721,20 @@ def tx_transfer(ctx, src, master, dst, amounts, fee, ots_key_index):
         quit(1)
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         transferCoinsReq = qrl_pb2.TransferCoinsReq(addresses_to=addresses_dst,
                                                     amounts=shor_amounts,
                                                     fee=fee_shor,
                                                     xmss_pk=address_src_pk,
                                                     master_addr=master_addr)
 
-        transferCoinsResp = ctx.obj.stub_public_api.TransferCoins(transferCoinsReq, timeout=5)
+        transferCoinsResp = stub.TransferCoins(transferCoinsReq, timeout=5)
 
         tx = Transaction.from_pbdata(transferCoinsResp.extended_transaction_unsigned.tx)
         tx.sign(src_xmss)
 
         pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
-        pushTransactionResp = ctx.obj.stub_public_api.PushTransaction(pushTransactionReq, timeout=5)
+        pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
 
         print(pushTransactionResp)
     except Exception as e:
@@ -682,6 +796,7 @@ def tx_token(ctx, src, master, symbol, name, owner, decimals, fee, ots_key_index
         quit(1)
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         tx = TokenTransaction.create(symbol=symbol.encode(),
                                      name=name.encode(),
                                      owner=address_owner,
@@ -694,7 +809,7 @@ def tx_token(ctx, src, master, symbol, name, owner, decimals, fee, ots_key_index
         tx.sign(src_xmss)
 
         pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
-        pushTransactionResp = ctx.obj.stub_public_api.PushTransaction(pushTransactionReq, timeout=5)
+        pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
 
         print(pushTransactionResp.error_code)
     except Exception as e:
@@ -752,6 +867,7 @@ def tx_transfertoken(ctx, src, master, token_txhash, dst, amounts, decimals, fee
         quit(1)
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         tx = TransferTokenTransaction.create(token_txhash=bin_token_txhash,
                                              addrs_to=addresses_dst,
                                              amounts=shor_amounts,
@@ -761,7 +877,7 @@ def tx_transfertoken(ctx, src, master, token_txhash, dst, amounts, decimals, fee
         tx.sign(src_xmss)
 
         pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
-        pushTransactionResp = ctx.obj.stub_public_api.PushTransaction(pushTransactionReq, timeout=5)
+        pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
 
         print(pushTransactionResp.error_code)
     except Exception as e:
@@ -787,8 +903,9 @@ def token_list(ctx, owner):
         quit(1)
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         addressStateReq = qrl_pb2.GetAddressStateReq(address=owner_address)
-        addressStateResp = ctx.obj.stub_public_api.GetAddressState(addressStateReq, timeout=5)
+        addressStateResp = stub.GetAddressState(addressStateReq, timeout=5)
 
         for token_hash in addressStateResp.state.tokens:
             click.echo('Hash: %s' % (token_hash,))
@@ -812,8 +929,9 @@ def collect(ctx, msg_id):
         return
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         collectEphemeralMessageReq = qrl_pb2.CollectEphemeralMessageReq(msg_id=_parse_hexblob(msg_id))
-        collectEphemeralMessageResp = ctx.obj.stub_public_api.CollectEphemeralMessage(collectEphemeralMessageReq, timeout=5)
+        collectEphemeralMessageResp = stub.CollectEphemeralMessage(collectEphemeralMessageReq, timeout=5)
 
         print(len(collectEphemeralMessageResp.ephemeral_metadata.encrypted_ephemeral_message_list))
         for message in collectEphemeralMessageResp.ephemeral_metadata.encrypted_ephemeral_message_list:
@@ -859,8 +977,9 @@ def send_eph_message(ctx, msg_id, ttl, ttr, enc_aes256_symkey, nonce, payload):
                                                                enc_aes256_symkey)
 
     try:
+        stub = ctx.obj.get_stub_public_api()
         ephemeralMessageReq = qrl_pb2.PushEphemeralMessageReq(ephemeral_message=encrypted_ephemeral_msg.pbdata)
-        ephemeralMessageResp = ctx.obj.stub_public_api.PushEphemeralMessage(ephemeralMessageReq, timeout=5)
+        ephemeralMessageResp = stub.PushEphemeralMessage(ephemeralMessageReq, timeout=5)
 
         print(ephemeralMessageResp.error_code)
     except Exception as e:
@@ -908,8 +1027,9 @@ def tx_latticepk(ctx, src, master, kyber_pk, dilithium_pk, fee, ots_key_index):
                                      master_addr=master_addr)
         tx.sign(src_xmss)
 
+        stub = ctx.obj.get_stub_public_api()
         pushTransactionReq = qrl_pb2.PushTransactionReq(transaction_signed=tx.pbdata)
-        pushTransactionResp = ctx.obj.stub_public_api.PushTransaction(pushTransactionReq, timeout=5)
+        pushTransactionResp = stub.PushTransaction(pushTransactionReq, timeout=5)
 
         print(pushTransactionResp.error_code)
     except Exception as e:
@@ -922,7 +1042,8 @@ def state(ctx):
     """
     Shows Information about a Node's State
     """
-    nodeStateResp = ctx.obj.stub_public_api.GetNodeState(qrl_pb2.GetNodeStateReq())
+    stub = ctx.obj.get_stub_public_api()
+    nodeStateResp = stub.GetNodeState(qrl_pb2.GetNodeStateReq())
 
     if ctx.obj.json:
         click.echo(MessageToJson(nodeStateResp))

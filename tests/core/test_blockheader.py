@@ -23,16 +23,18 @@ class TestBlockHeader(TestCase):
         self.assertIsNotNone(block_header)  # just to avoid warnings
 
     def test_init2(self):
-        block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
-        self.assertIsNotNone(block_header)  # just to avoid warnings
+        with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
+            time_mock.return_value = 1615270948
+            block_header = BlockHeader.create(1, sha256(b'prev'), time_mock.return_value, sha256(b'txs'), 10)
+            self.assertIsNotNone(block_header)  # just to avoid warnings
 
     def test_blob(self):
         with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
             time_mock.return_value = 1615270948
 
-            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
-            self.assertEquals('0074aa496ffe19107faaf418b720fb5b8446ba4b595c178fcf099c99b3dee99860d788c77910a9000000'
-                              '000000000000000000ede0d022b37421b81b7bbcf5b497fb89408c05c7d713c5e1e5187b02aa9344cf83',
+            block_header = BlockHeader.create(1, sha256(b'prev'), time_mock.return_value, sha256(b'txs'), 10)
+            self.assertEquals('00501846b24200c31fca7172a7f701ae50322579cfdf1d7777daab4ce6ead70b76debb2c51a1'
+                              'c70000000000000000000000002b80aecec05ad5c7c4f2259c8f69e2966a6ce102d4609af2cd',
                               bin2hstr(block_header.mining_blob))
             self.assertEquals(config.dev.mining_blob_size, len(block_header.mining_blob))
 
@@ -40,10 +42,10 @@ class TestBlockHeader(TestCase):
         with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
             time_mock.return_value = 1615270948
 
-            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+            block_header = BlockHeader.create(1, sha256(b'prev'), time_mock.return_value, sha256(b'txs'), 10)
             header_hash = block_header.generate_headerhash()
 
-            self.assertEquals('d41ae9dede611316d9605547e3429ae777a28ec0e39b371acf7ea938b94a4a86',
+            self.assertEquals('81dd8032691331fb9cb6d4b8c3cf82dfec7873eb96789a10076b70da45315a38',
                               bin2hstr(header_hash))
 
             self.assertEquals(bin2hstr(header_hash),
@@ -55,13 +57,13 @@ class TestBlockHeader(TestCase):
         with mock.patch('qrl.core.misc.ntp.getTime') as time_mock:
             time_mock.return_value = 1615270948
 
-            block_header = BlockHeader.create(1, sha256(b'prev'), sha256(b'txs'), 10)
+            block_header = BlockHeader.create(1, sha256(b'prev'), time_mock.return_value, sha256(b'txs'), 10)
 
             block_header.set_nonces(100, 0)
 
             header_hash = block_header.generate_headerhash()
 
-            self.assertEquals('8828d59f5bd3a2eae84b5d5b603d90236bc85f8edfd90adf77d64cb109f55f34',
+            self.assertEquals('f48ef2a482b2b85b429979ea1d7014806754b3ff37705c4f61a54f17bca4ccc4',
                               bin2hstr(header_hash))
 
             self.assertEquals(bin2hstr(header_hash),

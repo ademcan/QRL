@@ -4,7 +4,7 @@
 import threading
 from unittest import TestCase
 
-from pyqryptonight.pyqryptonight import Qryptominer, PoWHelper
+from pyqryptonight.pyqryptonight import Qryptominer, PoWHelper, SOLUTION
 
 from qrl.core import config
 from qrl.core.Block import Block
@@ -38,10 +38,11 @@ class TestQryptominer(TestCase):
                 self._solution_lock.acquire(blocking=True)
                 self._solution_lock.release()
 
-            def solutionEvent(self, nonce):
-                self.nonce = nonce
-                self.solution_blob = self.solutionInput()
-                self._solution_lock.release()
+            def handleEvent(self, event):
+                if event.type == SOLUTION:
+                    self.nonce = event.nonce
+                    self.solution_blob = self.solutionInput()
+                    self._solution_lock.release()
 
         block_timestamp = 1515443508
         parent_block_timestamp = 1515443508
@@ -76,7 +77,7 @@ class TestQryptominer(TestCase):
         expected_blob = (0, 231, 90, 101, 142, 20, 245, 183, 96, 5, 216, 159, 111, 239, 93, 217, 138, 10, 227, 159, 198,
                          207, 109, 238, 83, 220, 167, 148, 247, 200, 197, 41, 37, 36, 150, 12, 116, 85, 254, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 181, 198, 40, 62, 106, 139, 108, 83, 216, 206, 161, 148, 50, 65, 212,
-                         137, 94, 102, 124, 45, 51, 57, 43, 19, 51, 68, 58, 189, 229, 45, 225, 85, 203)
+                         137, 94, 102, 124, 45, 51, 57, 43, 19, 51)
         self.assertEqual(expected_blob, tuple(block.mining_blob))
 
         custom_qminer = CustomQMiner()

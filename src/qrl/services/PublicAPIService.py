@@ -3,18 +3,17 @@
 # file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 import traceback
 
-from grpc import StatusCode
+from pyqrllib.pyqrllib import hstr2bin, QRLHelper
 
 from qrl.core import config
-from qrl.core.misc import logger
-from qrl.core.Transaction import Transaction, CODEMAP
 from qrl.core.AddressState import AddressState
-from qrl.core.qrlnode import QRLNode
 from qrl.core.EphemeralMessage import EncryptedEphemeralMessage
+from qrl.core.Transaction import Transaction, CODEMAP
+from qrl.core.misc import logger
+from qrl.core.qrlnode import QRLNode
 from qrl.generated import qrl_pb2
 from qrl.generated.qrl_pb2_grpc import PublicAPIServicer
-from qrl.services.grpcHelper import Grpc_exception_wrapper
-from pyqrllib.pyqrllib import hstr2bin, QRLHelper
+from qrl.services.grpcHelper import GrpcExceptionWrapper
 
 
 class PublicAPIService(PublicAPIServicer):
@@ -24,23 +23,33 @@ class PublicAPIService(PublicAPIServicer):
     def __init__(self, qrlnode: QRLNode):
         self.qrlnode = qrlnode
 
-    @Grpc_exception_wrapper(qrl_pb2.GetAddressFromPKResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetAddressFromPKResp)
     def GetAddressFromPK(self, request: qrl_pb2.GetAddressFromPKReq, context) -> qrl_pb2.GetAddressFromPKResp:
         return qrl_pb2.GetAddressFromPKResp(address=bytes(QRLHelper.getAddress(request.pk)))
 
-    @Grpc_exception_wrapper(qrl_pb2.GetNodeStateResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetPeersStatResp)
+    def GetPeersStat(self, request: qrl_pb2.GetPeersStatReq, context) -> qrl_pb2.GetPeersStatResp:
+        peers_stat_resp = qrl_pb2.GetPeersStatResp()
+        peers_stat = self.qrlnode.get_peers_stat()
+
+        for stat in peers_stat:
+            peers_stat_resp.peers_stat.extend([stat])
+
+        return peers_stat_resp
+
+    @GrpcExceptionWrapper(qrl_pb2.GetNodeStateResp)
     def GetNodeState(self, request: qrl_pb2.GetNodeStateReq, context) -> qrl_pb2.GetNodeStateResp:
         return qrl_pb2.GetNodeStateResp(info=self.qrlnode.getNodeInfo())
 
-    @Grpc_exception_wrapper(qrl_pb2.GetKnownPeersResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetKnownPeersResp)
     def GetKnownPeers(self, request: qrl_pb2.GetKnownPeersReq, context) -> qrl_pb2.GetKnownPeersResp:
         response = qrl_pb2.GetKnownPeersResp()
         response.node_info.CopyFrom(self.qrlnode.getNodeInfo())
-        response.known_peers.extend([qrl_pb2.Peer(ip=p) for p in self.qrlnode._peer_addresses])
+        response.known_peers.extend([qrl_pb2.Peer(ip=p) for p in self.qrlnode.peer_addresses])
 
         return response
 
-    @Grpc_exception_wrapper(qrl_pb2.GetStatsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetStatsResp)
     def GetStats(self, request: qrl_pb2.GetStatsReq, context) -> qrl_pb2.GetStatsResp:
         response = qrl_pb2.GetStatsResp()
         response.node_info.CopyFrom(self.qrlnode.getNodeInfo())
@@ -59,12 +68,12 @@ class PublicAPIService(PublicAPIServicer):
 
         return response
 
-    @Grpc_exception_wrapper(qrl_pb2.GetAddressStateResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetAddressStateResp)
     def GetAddressState(self, request: qrl_pb2.GetAddressStateReq, context) -> qrl_pb2.GetAddressStateResp:
         address_state = self.qrlnode.get_address_state(request.address)
         return qrl_pb2.GetAddressStateResp(state=address_state.pbdata)
 
-    @Grpc_exception_wrapper(qrl_pb2.TransferCoinsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
     def TransferCoins(self, request: qrl_pb2.TransferCoinsReq, context) -> qrl_pb2.TransferCoinsResp:
         logger.debug("[PublicAPI] TransferCoins")
         tx = self.qrlnode.create_send_tx(addrs_to=request.addresses_to,
@@ -78,15 +87,15 @@ class PublicAPIService(PublicAPIServicer):
                                                                     size=tx.size)
         return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
 
-    @Grpc_exception_wrapper(qrl_pb2.PushTransactionResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.PushTransactionResp)
     def PushTransaction(self, request: qrl_pb2.PushTransactionReq, context) -> qrl_pb2.PushTransactionResp:
         logger.debug("[PublicAPI] PushTransaction")
-        tx = Transaction.from_pbdata(request.transaction_signed)
-        tx.update_txhash()
-
         answer = qrl_pb2.PushTransactionResp()
 
         try:
+            tx = Transaction.from_pbdata(request.transaction_signed)
+            tx.update_txhash()
+
             # FIXME: Full validation takes too much time. At least verify there is a signature
             # the validation happens later in the tx pool
             if len(tx.signature) > 1000:
@@ -103,7 +112,20 @@ class PublicAPIService(PublicAPIServicer):
 
         return answer
 
-    @Grpc_exception_wrapper(qrl_pb2.TransferCoinsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
+    def GetMessageTxn(self, request: qrl_pb2.TokenTxnReq, context) -> qrl_pb2.TransferCoinsResp:
+        logger.debug("[PublicAPI] GetMessageTxn")
+        tx = self.qrlnode.create_message_txn(message=request.message,
+                                             fee=request.fee,
+                                             xmss_pk=request.xmss_pk,
+                                             master_addr=request.master_addr)
+
+        extended_transaction_unsigned = qrl_pb2.TransactionExtended(tx=tx.pbdata,
+                                                                    addr_from=tx.addr_from,
+                                                                    size=tx.size)
+        return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
+
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
     def GetTokenTxn(self, request: qrl_pb2.TokenTxnReq, context) -> qrl_pb2.TransferCoinsResp:
         logger.debug("[PublicAPI] GetTokenTxn")
         tx = self.qrlnode.create_token_txn(symbol=request.symbol,
@@ -120,7 +142,7 @@ class PublicAPIService(PublicAPIServicer):
                                                                     size=tx.size)
         return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
 
-    @Grpc_exception_wrapper(qrl_pb2.TransferCoinsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
     def GetTransferTokenTxn(self, request: qrl_pb2.TransferTokenTxnReq, context) -> qrl_pb2.TransferCoinsResp:
         logger.debug("[PublicAPI] GetTransferTokenTxn")
         bin_token_txhash = bytes(hstr2bin(request.token_txhash.decode()))
@@ -136,7 +158,7 @@ class PublicAPIService(PublicAPIServicer):
                                                                     size=tx.size)
         return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
 
-    @Grpc_exception_wrapper(qrl_pb2.TransferCoinsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
     def GetSlaveTxn(self, request: qrl_pb2.SlaveTxnReq, context) -> qrl_pb2.TransferCoinsResp:
         logger.debug("[PublicAPI] GetSlaveTxn")
         tx = self.qrlnode.create_slave_tx(slave_pks=request.slave_pks,
@@ -150,7 +172,7 @@ class PublicAPIService(PublicAPIServicer):
                                                                     size=tx.size)
         return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
 
-    @Grpc_exception_wrapper(qrl_pb2.TransferCoinsResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.TransferCoinsResp)
     def GetLatticePublicKeyTxn(self, request: qrl_pb2.LatticePublicKeyTxnReq, context) -> qrl_pb2.TransferCoinsResp:
         logger.debug("[PublicAPI] GetLatticePublicKeyTxn")
         tx = self.qrlnode.create_lattice_public_key_txn(kyber_pk=request.kyber_pk,
@@ -164,7 +186,7 @@ class PublicAPIService(PublicAPIServicer):
                                                                     size=tx.size)
         return qrl_pb2.TransferCoinsResp(extended_transaction_unsigned=extended_transaction_unsigned)
 
-    @Grpc_exception_wrapper(qrl_pb2.GetObjectResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetObjectResp)
     def GetObject(self, request: qrl_pb2.GetObjectReq, context) -> qrl_pb2.GetObjectResp:
         logger.debug("[PublicAPI] GetObject")
         answer = qrl_pb2.GetObjectResp()
@@ -173,13 +195,16 @@ class PublicAPIService(PublicAPIServicer):
         # FIXME: We need a unified way to access and validate data.
         query = bytes(request.query)  # query will be as a string, if Q is detected convert, etc.
 
-        if AddressState.address_is_valid(query):
-            if self.qrlnode.get_address_is_used(query):
-                address_state = self.qrlnode.get_address_state(query)
-                if address_state is not None:
-                    answer.found = True
-                    answer.address_state.CopyFrom(address_state.pbdata)
-                    return answer
+        try:
+            if AddressState.address_is_valid(query):
+                if self.qrlnode.get_address_is_used(query):
+                    address_state = self.qrlnode.get_address_state(query)
+                    if address_state is not None:
+                        answer.found = True
+                        answer.address_state.CopyFrom(address_state.pbdata)
+                        return answer
+        except ValueError:
+            pass
 
         transaction, block_number = self.qrlnode.get_transaction(query)
         if transaction is not None:
@@ -221,14 +246,7 @@ class PublicAPIService(PublicAPIServicer):
 
         return answer
 
-    @Grpc_exception_wrapper(qrl_pb2.TokenDetailedList, StatusCode.UNKNOWN)
-    def GetTokenDetailedList(self, request: qrl_pb2.Empty, context) -> qrl_pb2.TokenDetailedList:
-        logger.debug("[PublicAPI] TokenDetailedList")
-        token_detailed_list = self.qrlnode.get_token_detailed_list()
-
-        return token_detailed_list
-
-    @Grpc_exception_wrapper(qrl_pb2.GetLatestDataResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.GetLatestDataResp)
     def GetLatestData(self, request: qrl_pb2.GetLatestDataReq, context) -> qrl_pb2.GetLatestDataResp:
         logger.debug("[PublicAPI] GetLatestData")
         response = qrl_pb2.GetLatestDataResp()
@@ -276,7 +294,7 @@ class PublicAPIService(PublicAPIServicer):
 
         return response
 
-    @Grpc_exception_wrapper(qrl_pb2.PushTransactionResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.PushTransactionResp)
     def PushEphemeralMessage(self, request: qrl_pb2.PushEphemeralMessageReq, context) -> qrl_pb2.PushTransactionResp:
         logger.debug("[PublicAPI] PushEphemeralMessageReq")
         submitted = False
@@ -286,10 +304,13 @@ class PublicAPIService(PublicAPIServicer):
             submitted = self.qrlnode.broadcast_ephemeral_message(encrypted_ephemeral_message)
 
         answer = qrl_pb2.PushTransactionResp()
-        answer.some_response = str(submitted)
+        answer.error_code = qrl_pb2.PushTransactionResp.ERROR
+        if submitted:
+            answer.error_code = qrl_pb2.PushTransactionResp.SUBMITTED
+
         return answer
 
-    @Grpc_exception_wrapper(qrl_pb2.PushTransactionResp, StatusCode.UNKNOWN)
+    @GrpcExceptionWrapper(qrl_pb2.PushTransactionResp)
     def CollectEphemeralMessage(self,
                                 request: qrl_pb2.CollectEphemeralMessageReq,
                                 context) -> qrl_pb2.CollectEphemeralMessageResp:

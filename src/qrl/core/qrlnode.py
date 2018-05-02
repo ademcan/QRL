@@ -6,9 +6,8 @@ import time
 from decimal import Decimal
 from typing import Optional, List, Iterator
 
-from twisted.internet import reactor
-
 from pyqrllib.pyqrllib import QRLHelper
+from twisted.internet import reactor
 
 from qrl.core import config
 from qrl.core.AddressState import AddressState
@@ -17,9 +16,8 @@ from qrl.core.ChainManager import ChainManager
 from qrl.core.ESyncState import ESyncState
 from qrl.core.EphemeralMessage import EncryptedEphemeralMessage
 from qrl.core.State import State
-from qrl.core.TokenList import TokenList
 from qrl.core.Transaction import TransferTransaction, TransferTokenTransaction, TokenTransaction, SlaveTransaction, \
-    LatticePublicKey
+    LatticePublicKey, MessageTransaction
 from qrl.core.misc import ntp
 from qrl.core.misc.expiring_set import ExpiringSet
 from qrl.core.misc.logger import logger
@@ -123,7 +121,11 @@ class QRLNode:
     @property
     def block_time_mean(self):
         block = self._chain_manager.get_last_block()
+
         prev_block_metadata = self._chain_manager.state.get_block_metadata(block.prev_headerhash)
+        if prev_block_metadata is None:
+            return config.dev.mining_setpoint_blocktime
+
         movavg = self._chain_manager.state.get_measurement(block.timestamp,
                                                            block.prev_headerhash,
                                                            prev_block_metadata)
@@ -146,7 +148,16 @@ class QRLNode:
 
     @property
     def peer_addresses(self):
-        return self.peer_manager._peer_addresses
+        return self.peer_manager.peer_addresses
+
+    def get_peers_stat(self) -> list:
+        peers_stat = []
+        for source in self.peer_manager.peer_node_status:
+            peer_stat = qrl_pb2.PeerStat(peer_ip=source.peer_ip.encode(),
+                                         port=source.peer_port,
+                                         node_chain_state=self.peer_manager.peer_node_status[source])
+            peers_stat.append(peer_stat)
+        return peers_stat
 
     ####################################################
     ####################################################
@@ -233,6 +244,16 @@ class QRLNode:
     ####################################################
 
     @staticmethod
+    def create_message_txn(message: bytes,
+                           fee: int,
+                           xmss_pk: bytes,
+                           master_addr: bytes):
+        return MessageTransaction.create(message_hash=message,
+                                         fee=fee,
+                                         xmss_pk=xmss_pk,
+                                         master_addr=master_addr)
+
+    @staticmethod
     def create_token_txn(symbol: bytes,
                          name: bytes,
                          owner: bytes,
@@ -273,7 +294,7 @@ class QRLNode:
         addr_from = self.get_addr_from(xmss_pk, master_addr)
         balance = self.db_state.balance(addr_from)
         if sum(amounts) + fee > balance:
-            raise RuntimeError("Not enough funds in the source address")
+            raise ValueError("Not enough funds in the source address")
 
         return TransferTransaction.create(addrs_to=addrs_to,
                                           amounts=amounts,
@@ -372,17 +393,6 @@ class QRLNode:
         if result:
             return result[1]
         return None
-
-    def get_token_detailed_list(self):
-        pbdata = self.db_state.get_token_list()
-        token_list = TokenList.from_json(pbdata)
-        token_detailed_list = qrl_pb2.TokenDetailedList()
-        for token_txhash in token_list.token_txhash:
-            token_txn, _ = self.db_state.get_tx_metadata(token_txhash)
-            transaction_extended = qrl_pb2.TransactionExtended(tx=token_txn.pbdata,
-                                                               addr_from=token_txhash.addr_from)
-            token_detailed_list.extended_tokens.extend([transaction_extended])
-        return token_detailed_list
 
     def get_latest_blocks(self, offset, count) -> List[Block]:
         answer = []
