@@ -13,5 +13,5 @@ from qrl.core.misc.DependencyChecker import DependencyChecker  # noqa
 DependencyChecker.check()
 
 from qrl.main import main  # noqa
-
+print("_________________STAAAARTING THE NODE_________________")
 main()
