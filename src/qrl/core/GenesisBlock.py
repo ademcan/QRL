@@ -26,7 +26,7 @@ class GenesisBlock(Block, metaclass=Singleton):
         # Override genesis if yaml is available (integration testing, etc)
         print("***************************************************************",config.user.qrl_dir,"********************************************************")
         print(os.listdir(config.user.qrl_dir))
-        genesis_config_path = os.path.join(config.user.qrl_dir, 'genesis.yml')
+        genesis_config_path = os.path.join('/root/genesis.yml')
         if os.path.isfile(genesis_config_path):
             print("***************************************************************LOADING GENESIS.YML********************************************************")
             with open(genesis_config_path) as f:
